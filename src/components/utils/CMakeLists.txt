@@ -37,9 +37,12 @@ if(QNXNTO)
     "${CMAKE_CURRENT_LIST_DIR}/src/threads/pulse_thread_delegate.cc")
 endif()
 
-find_package(Boost 1.66 COMPONENTS system thread REQUIRED)
-
 if(ENABLE_LOG)
+  SDL_find_package(apr REQUIRED)
+  SDL_find_package(apr-util REQUIRED)
+  SDL_find_package(log4cxx REQUIRED)
+  SDL_find_package(boost REQUIRED)
+
   find_package(EXPAT REQUIRED)
 
   target_sources(${PROJECT_NAME}
