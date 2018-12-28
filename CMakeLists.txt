@@ -30,6 +30,8 @@
 
 cmake_minimum_required(VERSION 2.8.11)
 
+set(CMAKE_CXX_STANDARD 11)
+
 set (PROJECT smartDeviceLinkCore)
 project (${PROJECT})
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/tools/cmake/modules/")
@@ -43,8 +45,13 @@ set(CMAKE_FIND_ROOT_PATH "${CMAKE_FIND_ROOT_PATH}" "$ENV{THIRD_PARTY_INSTALL_PRE
 set (HMI "web" CACHE STRING "HMI type")
 option(EXTENDED_MEDIA_MODE "Turn on and off extended Madia Manager features relates to PulseAudio A2DP and GStreamer" OFF)
 option(BUILD_SHARED_LIBS "Build all libraries as shared (if ON) or static (if OFF)" OFF)
-option(BUILD_BT_SUPPORT "Bluetooth support" ON)
-option(BUILD_USB_SUPPORT "libusb support" ON)
+if(UNIX AND QNXNTO)
+  option(BUILD_BT_SUPPORT "Bluetooth support" OFF)
+  option(BUILD_USB_SUPPORT "libusb support" OFF)
+else()
+  option(BUILD_BT_SUPPORT "Bluetooth support" ON)
+  option(BUILD_USB_SUPPORT "libusb support" ON)
+endif()
 option(BUILD_BACKTRACE_SUPPORT "backtrace support" ON)
 option(BUILD_TESTS "Possibility to build and run tests" OFF)
 option(TELEMETRY_MONITOR "Enable profiling time test util" ON)
@@ -57,11 +64,6 @@ option(USE_COTIRE "Use Cotire to speed up build (currently only for commands tes
 option(USE_GOLD_LD "Use gold linker intead of GNU linker" ON)
 option(USE_CCACHE "Turn on ccache usage" ON)
 option(USE_DISTCC "Turn on distributed build_usage" OFF)
-
-if(UNIX AND QNXNTO)
-  set(BUILD_BT_SUPPORT OFF)
-  set(BUILD_USB_SUPPORT OFF)
-endif()
 
 set (EXTENDED_POLICY "PROPRIETARY" CACHE STRING "Policy mode (PROPRIETARY, HTTP or EXTERNAL_PROPRIETARY)")
 set_property(CACHE EXTENDED_POLICY PROPERTY STRINGS PROPRIETARY HTTP EXTERNAL_PROPRIETARY)
@@ -242,7 +244,7 @@ set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/Modules/")
 set(CMAKE_INSTALL_PREFIX ${CMAKE_CURRENT_BINARY_DIR})
 set(ARCHIVE_OUTPUT_DIRECTORY ./bin)
 
-set(CMAKE_CXX_FLAGS "-fPIC -std=gnu++11  -Wall -Werror -Wuninitialized -Wvla")
+set(CMAKE_CXX_FLAGS "-fPIC -Wall -Werror -Wuninitialized -Wvla")
 
 get_os(OS)
 if(${OS} STREQUAL "qnx")

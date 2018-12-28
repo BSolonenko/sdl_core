@@ -36,13 +36,10 @@
 #include "application_manager/app_launch/app_launch_data_impl.h"
 #include "application_manager/app_launch_settings.h"
 #include "utils/macro.h"
-#ifdef __QNX__
-#include "utils/qdb_wrapper/sql_database.h"
-#include "utils/qdb_wrapper/sql_query.h"
-#else  // linux
-#include "utils/sqlite_wrapper/sql_database.h"
-#include "utils/sqlite_wrapper/sql_query.h"
-#endif
+
+#include "sql_database.h"
+#include "sql_query.h"
+
 
 namespace app_launch {
 

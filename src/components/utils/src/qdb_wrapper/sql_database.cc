@@ -50,7 +50,7 @@ bool SQLDatabase::Open() {
   sync_primitives::AutoLock auto_lock(conn_lock_);
   if (conn_)
     return true;
-  conn_ = qdb_connect(get_path().c_str(), 0);
+  conn_ = qdb_connect(db_name_.c_str(), 0);
   if (conn_ == NULL) {
     error_ = Error::ERROR;
     return false;

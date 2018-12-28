@@ -113,7 +113,9 @@ endif ()
 if(UNIX AND NOT QNXNTO)
   list(APPEND LIBRARIES pthread)
   list(APPEND LIBRARIES dl)
-elseif(QNXNTO)
+endif()
+
+if(${OS} STREQUAL "qnx")
   set(SOURCES ${SOURCES}
   "${CMAKE_CURRENT_LIST_DIR}/src/threads/async_runner.cc"
   "${CMAKE_CURRENT_LIST_DIR}/src/threads/pulse_thread_delegate.cc"
@@ -123,7 +125,7 @@ elseif(QNXNTO)
   "${CMAKE_CURRENT_LIST_DIR}/src/signals_posix.cc"
   "${CMAKE_CURRENT_LIST_DIR}/src/rwlock_posix.cc"
   "${CMAKE_CURRENT_LIST_DIR}/src/date_time.cc"
- )
+  )
 endif()
 
 add_library("Utils" ${SOURCES})
