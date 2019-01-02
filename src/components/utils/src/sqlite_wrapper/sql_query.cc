@@ -30,10 +30,10 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-#include "utils/sqlite_wrapper/sql_query.h"
+#include "sql/sql_query.h"
 #include <sqlite3.h>
 #include <cassert>
-#include "utils/sqlite_wrapper/sql_database.h"
+#include "sql/sql_database.h"
 
 namespace utils {
 namespace dbms {

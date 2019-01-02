@@ -35,7 +35,7 @@
 
 #include <qdb/qdb.h>
 #include <string>
-#include "utils/qdb_wrapper/sql_error.h"
+#include "sql/sql_error.h"
 #include "utils/lock.h"
 
 namespace utils {
@@ -91,17 +91,16 @@ class SQLDatabase {
    */
   bool Backup();
 
-	/**
+  /**
    * Sets path to database
-   * If the database is already opened then need reopen it
+   * After setting the path need to reopen the database
    */
   void set_path(const std::string& path);
 
-   /**
-   * @brief get_path databse location path.
-   *
-   * @return the path to the database location
-   */
+  /**
+  * @brief get_path database location path.
+  * @return the path to the database location
+  */
   std::string get_path() const;
 
  protected:

@@ -43,17 +43,12 @@ else()
     message(STATUS "QNX Version is ${CMAKE_SYSTEM_VERSION}")
 endif()
 
-# Since we are passing while crosscompilation CMAKE_FIND_ROOT_PATH(containing QNX third party dependencies)
-# as command line argument to cmake we have to take it into account when setting CMAKE_FIND_ROOT_PATH
-# variable below.
-# ${QNX_TARGET}/usr contains platform independent headers.
-# But QNX_TARGET is a root directory containing sysroots for different0 platforms.
-# Therefore to avoid passing overall QNX_TARGET as root path to search just for 'usr' directory
-# ${QNX_TARGET}/usr passed instead.
+# List of root paths to search on the filesystem
+# ${QNX_TARGET}/${QNX_TARGET_ARCH_DIR} contains architecture independent headers
+# ${QNX_TARGET}/${QNX_TARGET_ARCH_DIR} contains architecture-dependent headers
 set(CMAKE_FIND_ROOT_PATH "${CMAKE_FIND_ROOT_PATH}" "${QNX_TARGET}/${QNX_TARGET_ARCH_DIR}" "${QNX_TARGET}/usr")
-# Since CMAKE_TOOLCHAIN_FILE behaviour does NOT suppose any 'append' operations like setting
-# CMAKE_FIND_ROOT_PATH above and CMAKE_TOOLCHAIN_FILE must provide the same environment independently
-# of how often and how many times it calls remove duplicates in CMAKE_FIND_ROOT_PATH.
+
+# Will remove duplicate items in the CMAKE_FIND_ROOT_PATH list.
 list(REMOVE_DUPLICATES CMAKE_FIND_ROOT_PATH)
 
 set(CMAKE_FIND_ROOT_PATH_MODE_PROGRAM NEVER)

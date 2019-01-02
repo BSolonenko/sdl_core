@@ -38,7 +38,7 @@
 #include <string>
 #include <vector>
 #include <utility>
-#include "utils/qdb_wrapper/sql_error.h"
+#include "sql/sql_error.h"
 #include "utils/lock.h"
 
 namespace utils {

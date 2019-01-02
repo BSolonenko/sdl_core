@@ -31,7 +31,7 @@
  */
 
 #include <cstring>
-#include "qdb_wrapper/sql_database.h"
+#include "sql/sql_database.h"
 #include "utils/logger.h"
 
 namespace utils {
@@ -112,7 +112,7 @@ void SQLDatabase::set_path(const std::string& path) {
   path_ = path;
 }
 
- std::string SQLDatabase::get_path() const {
+std::string SQLDatabase::get_path() const {
   return path_ + db_name_;
 }
 

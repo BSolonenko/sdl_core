@@ -33,12 +33,7 @@
 #ifndef SRC_COMPONENTS_POLICY_POLICY_REGULAR_INCLUDE_POLICY_SQL_WRAPPER_H_
 #define SRC_COMPONENTS_POLICY_POLICY_REGULAR_INCLUDE_POLICY_SQL_WRAPPER_H_
 
-#if __QNX__
-#include "utils/qdb_wrapper/sql_database.h"
-#include "utils/qdb_wrapper/sql_query.h"
-#else  // __QNX__
-#include "utils/sqlite_wrapper/sql_database.h"
-#include "utils/sqlite_wrapper/sql_query.h"
-#endif  // __QNX__
+#include "sql/sql_database.h"
+#include "sql/sql_query.h"
 
 #endif  // SRC_COMPONENTS_POLICY_POLICY_REGULAR_INCLUDE_POLICY_SQL_WRAPPER_H_

@@ -38,7 +38,7 @@
 
 #include "utils/logger.h"
 #include "utils/date_time.h"
-#include "sql_database.h"
+#include "sql/sql_database.h"
 #include "utils/file_system.h"
 #include "utils/gen_hash.h"
 #include "policy/sql_pt_representation.h"

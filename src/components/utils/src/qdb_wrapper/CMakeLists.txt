@@ -31,7 +31,7 @@
 set(target dbms)
 set(QDB_SRC_DIR ${COMPONENTS_DIR}/utils/src/qdb_wrapper)
 
-include_directories(${COMPONENTS_DIR}/utils/include/utils)
+include_directories(${COMPONENTS_DIR}/utils/include/utils/qdb_wrapper)
 
 set(SOURCES
   ${QDB_SRC_DIR}/sql_database.cc
