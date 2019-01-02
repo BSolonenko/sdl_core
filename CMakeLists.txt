@@ -31,6 +31,7 @@
 cmake_minimum_required(VERSION 2.8.11)
 
 set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 
 set (PROJECT smartDeviceLinkCore)
 project (${PROJECT})
@@ -244,7 +245,7 @@ set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/Modules/")
 set(CMAKE_INSTALL_PREFIX ${CMAKE_CURRENT_BINARY_DIR})
 set(ARCHIVE_OUTPUT_DIRECTORY ./bin)
 
-set(CMAKE_CXX_FLAGS "-fPIC -Wall -Werror -Wuninitialized -Wvla")
+set(CMAKE_CXX_FLAGS "-Wall -Werror -Wuninitialized -Wvla")
 
 get_os(OS)
 if(${OS} STREQUAL "qnx")
