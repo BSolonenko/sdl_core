@@ -66,7 +66,7 @@ set(CMAKE_OBJDUMP      "${QNX_HOST}/usr/bin/nto${CMAKE_SYSTEM_PROCESSOR}-objdump
 set(CMAKE_LINKER       "${QNX_HOST}/usr/bin/nto${CMAKE_SYSTEM_PROCESSOR}-ld${HOST_EXECUTABLE_SUFFIX}"      CACHE PATH "QNX Linker Program")
 set(CMAKE_STRIP        "${QNX_HOST}/usr/bin/nto${CMAKE_SYSTEM_PROCESSOR}-strip${HOST_EXECUTABLE_SUFFIX}"   CACHE PATH "QNX Strip Program")
 
-# Will only add -V<target> if compiler name is "qcc"
+# Add -V<target> to specify target machine architecture
 set(CMAKE_C_COMPILER_TARGET   ${QNX_QCC_ARCH} CACHE INTERNAL "")
 set(CMAKE_CXX_COMPILER_TARGET ${QNX_QCC_ARCH} CACHE INTERNAL "")
 

@@ -102,6 +102,8 @@ SQLQuery::SQLQuery(SQLDatabase* db)
     , error_(Error::OK) {}
 
 SQLQuery::~SQLQuery() {
+  db_->Close();
+  delete db_;
   Finalize();
 }
 
