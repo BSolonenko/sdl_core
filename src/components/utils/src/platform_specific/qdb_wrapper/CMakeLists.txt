@@ -29,9 +29,9 @@
 # POSSIBILITY OF SUCH DAMAGE.
 
 set(target dbms)
-set(QDB_SRC_DIR ${COMPONENTS_DIR}/utils/src/qdb_wrapper)
+set(QDB_SRC_DIR ${COMPONENTS_DIR}/utils/src/platform_specific/qdb_wrapper)
 
-include_directories(${COMPONENTS_DIR}/utils/include/utils/qdb_wrapper)
+include_directories(${COMPONENTS_DIR}/utils/include/)
 
 set(SOURCES
   ${QDB_SRC_DIR}/sql_database.cc

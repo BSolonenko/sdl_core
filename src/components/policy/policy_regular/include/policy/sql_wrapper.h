@@ -33,7 +33,7 @@
 #ifndef SRC_COMPONENTS_POLICY_POLICY_REGULAR_INCLUDE_POLICY_SQL_WRAPPER_H_
 #define SRC_COMPONENTS_POLICY_POLICY_REGULAR_INCLUDE_POLICY_SQL_WRAPPER_H_
 
-#include "sql/sql_database.h"
-#include "sql/sql_query.h"
+#include "utils/sql/sql_database.h"
+#include "utils/sql/sql_query.h"
 
 #endif  // SRC_COMPONENTS_POLICY_POLICY_REGULAR_INCLUDE_POLICY_SQL_WRAPPER_H_

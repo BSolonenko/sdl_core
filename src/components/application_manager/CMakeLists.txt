@@ -64,17 +64,9 @@ include_directories (
   ${BSON_INCLUDE_DIRECTORY}
 )
 
-if (${CMAKE_SYSTEM_NAME} MATCHES "Linux")
-  include_directories(
-    ${COMPONENTS_DIR}/utils/include/utils/sqlite_wrapper/
-  )
-endif ()
-
-if (${CMAKE_SYSTEM_NAME} MATCHES "QNX")
-  include_directories(
-    ${COMPONENTS_DIR}/utils/include/utils/qdb_wrapper/
-  )
-endif()
+include_directories(
+  ${COMPONENTS_DIR}/utils/include/utils/sql/
+)
 
 set (MESSAGE_HELPER_SOURCE_DIR
   ${AM_SOURCE_DIR}/src/message_helper

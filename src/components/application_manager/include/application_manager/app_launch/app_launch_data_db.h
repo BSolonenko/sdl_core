@@ -37,8 +37,8 @@
 #include "application_manager/app_launch_settings.h"
 #include "utils/macro.h"
 
-#include "sql/sql_database.h"
-#include "sql/sql_query.h"
+#include "utils/sql/sql_database.h"
+#include "utils/sql/sql_query.h"
 
 namespace app_launch {
 

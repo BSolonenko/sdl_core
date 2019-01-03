@@ -38,7 +38,7 @@
 
 #include "utils/logger.h"
 #include "utils/date_time.h"
-#include "sql/sql_database.h"
+#include "utils/sql/sql_database.h"
 #include "utils/file_system.h"
 #include "utils/gen_hash.h"
 #include "policy/sql_pt_representation.h"
@@ -387,13 +387,12 @@ InitResult SQLPTRepresentation::Init(const PolicySettings* settings) {
       return InitResult::FAIL;
     }
   }
-#ifndef __QNX__
+
   if (!db_->IsReadWrite()) {
     LOG4CXX_ERROR(logger_, "There are no read/write permissions for database");
     return InitResult::FAIL;
   }
 
-#endif  // __QNX__
   utils::dbms::SQLQuery check_pages(db());
   if (!check_pages.Prepare(sql_pt::kCheckPgNumber) || !check_pages.Next()) {
     LOG4CXX_WARN(logger_, "Incorrect pragma for page counting.");

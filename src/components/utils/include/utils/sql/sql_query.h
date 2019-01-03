@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2015, Ford Motor Company
+ * Copyright (c) 2018, Ford Motor Company
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -34,11 +34,10 @@
 #define SRC_COMPONENTS_UTILS_INCLUDE_UTILS_QDB_WRAPPER_SQL_QUERY_H_
 
 #include <stdint.h>
-#include <qdb/qdb.h>
 #include <string>
 #include <vector>
 #include <utility>
-#include "sql/sql_error.h"
+#include "utils/sql/sql_error.h"
 #include "utils/lock.h"
 
 namespace utils {
@@ -202,61 +201,9 @@ class SQLQuery {
   SQLError LastError() const;
 
  private:
-  /**
-   * The instantiation of database
-   */
-  SQLDatabase* db_;
+  class PlatformSpecific;
 
-  /**
-   * The string of query
-   */
-  std::string query_;
-
-  /**
-   * The id of SQL statement in QDB
-   */
-  int statement_;
-
-  /**
-   * Containers for keeping bind data
-   */
-  std::vector<std::pair<int, int64_t> > int_binds_;
-  std::vector<std::pair<int, double> > double_binds_;
-  std::vector<std::pair<int, std::string> > string_binds_;
-  std::vector<int> null_binds_;
-
-  /**
-   * The array for binging data to the prepare query
-   */
-  qdb_binding_t* bindings_;
-
-  /**
-   * Lock for guarding bindings
-   */
-  sync_primitives::Lock bindings_lock_;
-
-  /**
-   * The result of query
-   */
-  qdb_result_t* result_;
-
-  /**
-   * The current row in result for select
-   */
-  int current_row_;
-
-  /**
-   * The number of rows in a result
-   */
-  int rows_;
-
-  /**
-   * The last error that occurred with this query
-   */
-  Error error_;
-
-  uint8_t SetBinds();
-  bool Result();
+  PlatformSpecific* specific_implementation_;
 };
 
 }  // namespace dbms

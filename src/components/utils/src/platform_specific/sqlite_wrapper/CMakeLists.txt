@@ -29,7 +29,7 @@
 # POSSIBILITY OF SUCH DAMAGE.
 
 set(target dbms)
-set(SQLITE_SRC_DIR ${COMPONENTS_DIR}/utils/src/sqlite_wrapper)
+set(SQLITE_SRC_DIR ${COMPONENTS_DIR}/utils/src/platform_specific/sqlite_wrapper)
 
 find_package(Sqlite3 REQUIRED)
 

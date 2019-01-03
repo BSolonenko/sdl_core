@@ -108,12 +108,12 @@ bool ResumptionDataDB::Init() {
       return false;
     }
   }
-#ifndef __QNX__
+
   if (!db_->IsReadWrite()) {
     LOG4CXX_ERROR(logger_, "There are no read/write permissions for database");
     return false;
   }
-#endif  // __QNX__
+
   utils::dbms::SQLQuery query(db());
   if (!query.Exec(kCreateSchema)) {
     LOG4CXX_ERROR(

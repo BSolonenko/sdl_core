@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2015, Ford Motor Company
+ * Copyright (c) 2018, Ford Motor Company
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -33,21 +33,22 @@
 #ifndef SRC_COMPONENTS_UTILS_INCLUDE_UTILS_QDB_WRAPPER_SQL_DATABASE_H_
 #define SRC_COMPONENTS_UTILS_INCLUDE_UTILS_QDB_WRAPPER_SQL_DATABASE_H_
 
-#include <qdb/qdb.h>
 #include <string>
-#include "sql/sql_error.h"
+#include "utils/sql/sql_error.h"
 #include "utils/lock.h"
 
 namespace utils {
 namespace dbms {
 
 class SQLQuery;
+class SQLHandle;
 
 /**
  * Represents a connection to a database.
  */
 class SQLDatabase {
  public:
+  SQLDatabase();
   explicit SQLDatabase(const std::string& db_name);
   ~SQLDatabase();
 
@@ -87,6 +88,12 @@ class SQLDatabase {
   SQLError LastError() const;
 
   /**
+   * Checks if database is read/write
+   * @return true if database is read/write
+   */
+  bool IsReadWrite();
+
+  /**
    * Call backup for opened DB
    */
   bool Backup();
@@ -108,40 +115,12 @@ class SQLDatabase {
    * Gets connection to the SQLite database
    * @return pointer to connection
    */
-  qdb_hdl_t* conn() const;
+  SQLHandle conn() const;
 
  private:
-  /**
-   * The connection to the SQLite database
-   */
-  qdb_hdl_t* conn_;
+  class PlatformSpecific;
 
-  /**
-   * Lock for guarding connection to database
-   */
-  sync_primitives::Lock conn_lock_;
-
-  /**
-   * The file path of database
-   */
-  std::string path_;
-
-  /**
-   * The database name
-   */
-  std::string db_name_;
-
-  /**
-   * The last error that occurred on the database
-   */
-  Error error_;
-
-  /**
-   * Execs query for internal using in this class
-   * @param query sql query without return results
-   * @return true if query was executed successfully
-   */
-  inline bool Exec(const std::string& query);
+  PlatformSpecific* specific_implementation_;
 
   friend class SQLQuery;
 };

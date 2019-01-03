@@ -45,10 +45,9 @@ include_directories (
 
 # dbms
 set(DBMS_PATHS
-  ${CMAKE_CURRENT_SOURCE_DIR}/include/utils/sqlite_wrapper
-  ${CMAKE_CURRENT_SOURCE_DIR}/src/sqlite_wrapper
-  ${CMAKE_CURRENT_SOURCE_DIR}/include/utils/qdb_wrapper
-  ${CMAKE_CURRENT_SOURCE_DIR}/src/qdb_wrapper
+  ${CMAKE_CURRENT_SOURCE_DIR}/include/utils/sql
+  ${CMAKE_CURRENT_SOURCE_DIR}/src/platform_specific/sqlite_wrapper
+  ${CMAKE_CURRENT_SOURCE_DIR}/src/platform_specific/qdb_wrapper
 )
 
 set(EXCLUDE_PATHS
@@ -104,10 +103,10 @@ collect_sources(SOURCES "${PATHS}" "${EXCLUDE_PATHS}")
 
 if (CMAKE_SYSTEM_NAME STREQUAL "QNX")
     # --- QDB Wrapper
-    add_subdirectory(./src/qdb_wrapper)
+    add_subdirectory(./src/platform_specific/qdb_wrapper)
 else ()
     # --- SQLite Wrapper
-    add_subdirectory(./src/sqlite_wrapper)
+    add_subdirectory(./src/platform_specific/sqlite_wrapper)
 endif ()
 
 if(UNIX AND NOT QNXNTO)
