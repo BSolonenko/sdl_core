@@ -43,13 +43,13 @@ namespace utils {
 namespace dbms {
 
 class SQLQuery;
-
+enum class Persistent {IN_MEMORY};
 /**
  * Represents a connection to a database.
  */
 class SQLDatabase {
  public:
-  SQLDatabase();
+  SQLDatabase(Persistent);
   explicit SQLDatabase(const std::string& filename);
   ~SQLDatabase();
 

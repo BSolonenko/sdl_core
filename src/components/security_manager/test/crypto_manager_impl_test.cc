@@ -30,11 +30,8 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifdef __QNXNTO__
-#include <openssl/ssl3.h>
-#else
 #include <openssl/ssl.h>
-#endif  //__QNXNTO__
+
 #include <limits>
 #include <fstream>
 #include <sstream>

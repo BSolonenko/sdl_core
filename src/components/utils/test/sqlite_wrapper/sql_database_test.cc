@@ -30,8 +30,8 @@
 */
 
 #include "gtest/gtest.h"
-#include "utils/sqlite_wrapper/sql_error.h"
-#include "utils/sqlite_wrapper/sql_database.h"
+#include "sql/sql_error.h"
+#include "sql/sql_database.h"
 
 using ::utils::dbms::SQLError;
 using ::utils::dbms::SQLDatabase;
@@ -51,7 +51,7 @@ namespace dbms_test {
 
 TEST(SQLDatabaseTest, OpenCloseMemory_OpenAndCloseDB_ActsWithoutError) {
   // arrange
-  SQLDatabase db;
+  SQLDatabase db(::utils::dbms::Persistent::IN_MEMORY);
   bool ret = db.Open();
 
   // assert
@@ -85,7 +85,7 @@ TEST(SQLDatabaseTest, OpenCloseFile_OpenAndCloseSpecifiedDB_ActsWithoutError) {
 
 TEST(SQLDatabaseTest, OpenDBTwice_NoError) {
   // arrange
-  SQLDatabase db;
+  SQLDatabase db(::utils::dbms::Persistent::IN_MEMORY);
   bool ret = db.Open();
 
   // assert
@@ -104,7 +104,7 @@ TEST(SQLDatabaseTest, OpenDBTwice_NoError) {
 
 TEST(SQLDatabaseTest, CloseDBTwice_NoError) {
   // arrange
-  SQLDatabase db;
+  SQLDatabase db(::utils::dbms::Persistent::IN_MEMORY);
   bool ret = db.Open();
 
   // assert
@@ -126,7 +126,7 @@ TEST(SQLDatabaseTest, CloseDBTwice_NoError) {
 
 TEST(SQLDatabaseTest, Close_DBWasNotOpened_NoError) {
   // act
-  SQLDatabase db;
+  SQLDatabase db(::utils::dbms::Persistent::IN_MEMORY);
   db.Close();
 
   // assert
@@ -136,7 +136,7 @@ TEST(SQLDatabaseTest, Close_DBWasNotOpened_NoError) {
 TEST(SQLDatabaseTest,
      CommitTransaction_StartAndCommitTransaction_ExpectActsWithoutError) {
   // arrange
-  SQLDatabase db;
+  SQLDatabase db(::utils::dbms::Persistent::IN_MEMORY);
 
   // assert
   ASSERT_TRUE(db.Open());
@@ -151,7 +151,7 @@ TEST(SQLDatabaseTest,
 TEST(SQLDatabaseTest,
      RollbackTransaction_StartAndRollbackTransaction_ExpectActsWithoutError) {
   // arrange
-  SQLDatabase db;
+  SQLDatabase db(::utils::dbms::Persistent::IN_MEMORY);
 
   // assert
   ASSERT_TRUE(db.Open());
@@ -166,7 +166,7 @@ TEST(SQLDatabaseTest,
 TEST(SQLDatabaseTest,
      FailedCommitTransaction_CommitTransactionWithoutBeginning_ExpectError) {
   // arrange
-  SQLDatabase db;
+  SQLDatabase db(::utils::dbms::Persistent::IN_MEMORY);
 
   // assert
   ASSERT_TRUE(db.Open());
@@ -180,7 +180,7 @@ TEST(
     SQLDatabaseTest,
     FailedRollbackTransaction_RollbackTransactionWithoutBeginning_ExpectError) {
   // arrange
-  SQLDatabase db;
+  SQLDatabase db(::utils::dbms::Persistent::IN_MEMORY);
 
   // assert
   ASSERT_TRUE(db.Open());
@@ -192,7 +192,7 @@ TEST(
 
 TEST(SQLDatabaseTest, BadTransaction_BeginTransitionWithoutOpenDB_ExpectError) {
   // arrange
-  SQLDatabase db;
+  SQLDatabase db(::utils::dbms::Persistent::IN_MEMORY);
 
   // assert
   EXPECT_FALSE(db.BeginTransaction());

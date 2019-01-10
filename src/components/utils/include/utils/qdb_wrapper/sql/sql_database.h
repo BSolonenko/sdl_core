@@ -42,12 +42,13 @@ namespace utils {
 namespace dbms {
 
 class SQLQuery;
-
+enum class Persistent {IN_MEMORY};
 /**
  * Represents a connection to a database.
  */
 class SQLDatabase {
  public:
+  SQLDatabase(Persistent);
   explicit SQLDatabase(const std::string& db_name);
   ~SQLDatabase();
 
@@ -98,6 +99,12 @@ class SQLDatabase {
   void set_path(const std::string& path);
 
   /**
+   * Checks if database is read/write
+   * @return true if database is read/write
+   */
+  bool IsReadWrite();
+
+  /**
   * @brief get_path database location path.
   * @return the path to the database location
   */
@@ -135,6 +142,12 @@ class SQLDatabase {
    * The last error that occurred on the database
    */
   Error error_;
+
+  /**
+   *  The temporary in-memory database
+   *  @see SQLite manual
+   */
+  static const std::string kInMemory;
 
   /**
    * Execs query for internal using in this class

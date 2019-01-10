@@ -61,9 +61,15 @@ set(LIBRARIES
   connectionHandler
   Utils
   jsoncpp
-  gmock_main
+  gmock
+  HMI_API
+  MOBILE_API
   dl
 )
+
+if (${CMAKE_SYSTEM_NAME} MATCHES "QNX")
+  list(REMOVE_ITEM LIBRARIES dl)
+endif()
 
 if(ENABLE_LOG)
   list(APPEND LIBRARIES log4cxx -L${LOG4CXX_LIBS_DIRECTORY})

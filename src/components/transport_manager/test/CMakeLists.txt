@@ -65,6 +65,10 @@ set(LIBRARIES
   jsoncpp
 )
 
+if(${OS} STREQUAL "qnx")
+  list(APPEND LIBRARIES socket)
+endif()
+
 if (BUILD_USB_SUPPORT)
   list(APPEND LIBRARIES libusb-1.0.so)
 endif()

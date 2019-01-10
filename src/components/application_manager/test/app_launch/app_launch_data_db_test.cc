@@ -36,8 +36,8 @@
 #include <memory>
 #include "gtest/gtest.h"
 #include "utils/macro.h"
-#include "sql_database.h"
-#include "sql_query.h"
+#include "sql/sql_database.h"
+#include "sql/sql_query.h"
 
 #include "utils/file_system.h"
 #include "application_manager/mock_app_launch_settings.h"

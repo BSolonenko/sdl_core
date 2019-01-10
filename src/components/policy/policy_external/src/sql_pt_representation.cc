@@ -89,7 +89,7 @@ SQLPTRepresentation::SQLPTRepresentation(bool in_memory) {
   db_ = new utils::dbms::SQLDatabase(kDatabaseName);
 #else   // __QNX__
   if (in_memory) {
-    db_ = new utils::dbms::SQLDatabase();
+    db_ = new utils::dbms::SQLDatabase(utils::dbms::Persistent::IN_MEMORY);
   } else {
     db_ = new utils::dbms::SQLDatabase(kDatabaseName);
   }

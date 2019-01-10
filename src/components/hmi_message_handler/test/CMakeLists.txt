@@ -43,7 +43,7 @@ else()
   set(EXCLUDE_PATHS hmi_message_handler_impl_test.cc)
 endif()
 
-set(LIBRARIES    
+set(LIBRARIES
     gmock
     ApplicationManager
     HMIMessageHandler
@@ -51,6 +51,10 @@ set(LIBRARIES
 	${BROKER_LIBRARIES}
     ConfigProfile
 )
+
+if(${OS} STREQUAL "qnx")
+  list(APPEND LIBRARIES socket)
+endif()
 
 collect_sources(SOURCES "${CMAKE_CURRENT_SOURCE_DIR}" "${EXCLUDE_PATHS}")
 

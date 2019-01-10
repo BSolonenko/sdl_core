@@ -39,6 +39,11 @@ namespace dbms {
 
 CREATE_LOGGERPTR_GLOBAL(logger_, "Utils")
 
+const std::string SQLDatabase::kInMemory = ":memory:";
+
+SQLDatabase::SQLDatabase(Persistent)
+    : conn_(NULL), db_name_(kInMemory), error_(Error::OK) {}
+
 SQLDatabase::SQLDatabase(const std::string& db_name)
     : conn_(NULL), db_name_(db_name), error_(Error::OK) {}
 
@@ -110,6 +115,10 @@ bool SQLDatabase::Backup() {
 
 void SQLDatabase::set_path(const std::string& path) {
   path_ = path;
+}
+
+bool SQLDatabase::IsReadWrite(){
+  return true;
 }
 
 std::string SQLDatabase::get_path() const {

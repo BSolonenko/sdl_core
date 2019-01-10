@@ -34,9 +34,9 @@
 
 #include "gtest/gtest.h"
 
-#include "utils/sqlite_wrapper/sql_error.h"
-#include "utils/sqlite_wrapper/sql_database.h"
-#include "utils/sqlite_wrapper/sql_query.h"
+#include "sql/sql_error.h"
+#include "sql/sql_database.h"
+#include "sql/sql_query.h"
 
 using ::utils::dbms::SQLError;
 using ::utils::dbms::SQLDatabase;

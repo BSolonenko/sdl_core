@@ -36,8 +36,8 @@
 #include "application_manager/mock_application.h"
 #include "application_manager/mock_application_manager_settings.h"
 #include "interfaces/MOBILE_API.h"
-#include "utils/sqlite_wrapper/sql_database.h"
-#include "utils/sqlite_wrapper/sql_query.h"
+#include "sql/sql_database.h"
+#include "sql/sql_query.h"
 
 #include "utils/file_system.h"
 #include "application_manager/resumption_data_test.h"

@@ -140,6 +140,13 @@ function(create_test NAME SOURCES LIBS)
   target_link_libraries("${NAME}" Utils)
   add_test(NAME ${NAME}
   COMMAND ${NAME} --gtest_output=xml:${CMAKE_BINARY_DIR}/test_results/)
+
+  set(match_string  "${CMAKE_INSTALL_PREFIX}")
+  set(replace_string "${CMAKE_INSTALL_PREFIX}/TestBin")
+  string(REPLACE ${match_string} ${replace_string} TEST_BIN_DIR ${CMAKE_CURRENT_BINARY_DIR})
+  string(REPLACE "/test" "" TEST_BIN_DIR ${TEST_BIN_DIR})
+  install(TARGETS ${NAME} DESTINATION ${TEST_BIN_DIR})
+
 endfunction()
 
 function(create_cotired_test NAME SOURCES LIBS)

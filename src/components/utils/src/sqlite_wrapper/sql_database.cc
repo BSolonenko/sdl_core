@@ -39,7 +39,7 @@ namespace dbms {
 const std::string SQLDatabase::kInMemory = ":memory:";
 const std::string SQLDatabase::kExtension = ".sqlite";
 
-SQLDatabase::SQLDatabase()
+SQLDatabase::SQLDatabase(Persistent)
     : conn_(NULL), databasename_(kInMemory), error_(SQLITE_OK) {}
 
 SQLDatabase::SQLDatabase(const std::string& db_name)

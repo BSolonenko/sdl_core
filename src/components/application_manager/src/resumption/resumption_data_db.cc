@@ -61,7 +61,7 @@ ResumptionDataDB::ResumptionDataDB(
       db_->set_path(path + "/");
     }
   } else if (db_storage == In_Memory_Storage) {
-    db_ = new utils::dbms::SQLDatabase();
+    db_ = new utils::dbms::SQLDatabase(utils::dbms::Persistent::IN_MEMORY);
 #endif  // __QNX__
   } else {
     LOG4CXX_AUTO_TRACE(logger_);

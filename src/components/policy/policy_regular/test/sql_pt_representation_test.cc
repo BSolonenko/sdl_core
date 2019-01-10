@@ -49,7 +49,7 @@
 #include "rpc_base/rpc_base.h"
 
 #include "utils/file_system.h"
-#include "utils/sqlite_wrapper/sql_database.h"
+#include "sql/sql_database.h"
 
 namespace policy_table = rpc::policy_table_interface_base;
 using policy::SQLPTRepresentation;
