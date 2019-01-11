@@ -42,6 +42,52 @@ A quick guide to installing, configuring, and running an instance of the SDL Cor
 %make install
 ```
 
+# How to Build SDL for QNX7
+## Install environment:
+1. Install QNX7 SDP into `/opt/qnx700` using QNX Software Center (with [myQNX account](https://www.qnx.com/account))
+2. Clone sdl_core repository
+3. Set environment variables
+```bash
+mkdir <path_to_3rd_party_folder>/<3rd_party_folder_name>
+export THIRD_PARTY_INSTALL_PREFIX=<path_to_3rd_party_folder>/<3rd_party_folder_name>
+export QNX_HOST=/opt/qnx700/host/linux/x86_64
+export QNX_TARGET=/opt/qnx700/target/qnx7
+```
+
+## Build SDL for QNX7:
+1. Build sdl using `CMAKE_TOOLCHAIN_FILE`
+```bash
+mkdir <path_to_build_folder>/<build_folder_name>
+cd <path_to_build_folder>/<build_folder_name>
+cmake -DCMAKE_TOOLCHAIN_FILE=<path_to_sdl_core>/toolchains/Toolchain-QNX7-ACC-x86.cmake <path_to_sdl>
+make install
+```
+
+## Instal qnx image:
+1. Open `qnxsoftwarecenter`
+2. Open the tab `available`
+3. Install the package `QNX SDP 7.0 x86-64 virtual machine for VMware` which is in the `QNX Software Development Platform -> Reference Images`
+4. Run image using `VMware`
+
+## Set up environment in qnx image:
+1. From `/opt/qnx700/target/qnx7/x86_64/usr/lib` in ubuntu to `usr/lib` in qnx image need to copy:
+  * libqdb.so.1
+  * libaoi.so.1
+  * libicudata.so.58
+  * libicui18n.so.58
+  * libicuuc.so.58
+  * libsqlite3.so.1
+  * libstrm.so.1
+
+2. From `/opt/qnx700/target/qnx7/x86_64/usr/sbin` in ubuntu to `usr/sbin` in qnx image need to copy:
+  * pps
+  * qdb
+
+## Run SDL in QNX7 image
+1. copy `<path_to_build_folder>/<build_folder_name>/bin` to qnx image
+2. in the image, run `qdbserver.sh` which is located in the bin folder
+3. in the image, run `smartDeviceLinkCore` which is located in the bin folder
+
 ## Start SDL Core
 Once SDL Core is compiled and installed you can start it from the executable in the bin folder
 
