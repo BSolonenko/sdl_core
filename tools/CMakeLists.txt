@@ -44,5 +44,6 @@ ExternalProject_Add_Step(intergen forcebuild
 
 if(BUILD_TESTS)
   add_subdirectory(intergen/test)
+  file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/infrastructure/run_tests.sh DESTINATION ${CMAKE_INSTALL_PREFIX}/TestBin)
 endif()
 add_subdirectory(policy_table_validator)

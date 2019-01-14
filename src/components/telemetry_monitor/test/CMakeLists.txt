@@ -75,3 +75,5 @@ endif()
 create_test("telemetry_monitor_test" "${SOURCES}" "${LIBRARIES}")
 
 file(COPY ${COMPONENTS_DIR}/telemetry_monitor/test/log4cxx.properties DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
+file(COPY ${COMPONENTS_DIR}/telemetry_monitor/test/log4cxx.properties DESTINATION ${TEST_BIN_DIR})
+

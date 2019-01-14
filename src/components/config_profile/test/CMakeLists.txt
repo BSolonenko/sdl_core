@@ -42,10 +42,17 @@ set(LIBRARIES
 
 collect_sources(SOURCES "${CMAKE_CURRENT_SOURCE_DIR}")
 create_test(config_profile_test "${SOURCES}" "${LIBRARIES}")
- 
+
 file(COPY smartDeviceLink.ini DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
 file(COPY smartDeviceLink_test.ini DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
 file(COPY smartDeviceLink_invalid_pairs.ini DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
 file(COPY smartDeviceLink_invalid_string.ini DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
-file(COPY smartDeviceLink_invalid_int.ini DESTINATION ${CMAKE_CURRENT_BINARY_DIR}) 
-file(COPY smartDeviceLink_invalid_boolean.ini DESTINATION ${CMAKE_CURRENT_BINARY_DIR}) 
+file(COPY smartDeviceLink_invalid_int.ini DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
+file(COPY smartDeviceLink_invalid_boolean.ini DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
+
+file(COPY smartDeviceLink.ini DESTINATION ${TEST_BIN_DIR})
+file(COPY smartDeviceLink_test.ini DESTINATION ${TEST_BIN_DIR})
+file(COPY smartDeviceLink_invalid_pairs.ini DESTINATION ${TEST_BIN_DIR})
+file(COPY smartDeviceLink_invalid_string.ini DESTINATION ${TEST_BIN_DIR})
+file(COPY smartDeviceLink_invalid_int.ini DESTINATION ${TEST_BIN_DIR})
+file(COPY smartDeviceLink_invalid_boolean.ini DESTINATION ${TEST_BIN_DIR})

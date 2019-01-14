@@ -62,5 +62,5 @@ set (SOURCES
   generated_interface_json_tests.cc
 )
 
-create_test(test_generated_interface "${SOURCES}" "${LIBRARIES}")
+create_test(generated_interface_test "${SOURCES}" "${LIBRARIES}")
 endif()

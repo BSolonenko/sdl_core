@@ -161,3 +161,21 @@ add_subdirectory(state_controller)
 add_subdirectory(app_launch)
 add_subdirectory(commands)
 add_subdirectory(message_helper)
+
+
+file(COPY smartDeviceLink_test2.ini DESTINATION ${TEST_BIN_DIR})
+file(COPY sdl_preloaded_pt.json DESTINATION ${TEST_BIN_DIR})
+file(COPY sdl_pt_update.json DESTINATION ${TEST_BIN_DIR})
+
+add_custom_command(
+  OUTPUT ${TEST_BIN_DIR}/libPolicy.so
+  COMMAND ${CMAKE_COMMAND} -E
+  copy  ${POLICY_PATH}/libPolicy.so ${TEST_BIN_DIR}
+)
+file(COPY hmi_capabilities.json DESTINATION ${TEST_BIN_DIR})
+file(COPY hmi_capabilities_sc1.json DESTINATION ${TEST_BIN_DIR})
+file(COPY hmi_capabilities_sc2.json DESTINATION ${TEST_BIN_DIR})
+file(COPY smartDeviceLink_test.ini DESTINATION ${TEST_BIN_DIR})
+
+file(MAKE_DIRECTORY ${TEST_BIN_DIR}/resumption)
+file(COPY smartDeviceLink_test.ini DESTINATION ${TEST_BIN_DIR}/resumption)

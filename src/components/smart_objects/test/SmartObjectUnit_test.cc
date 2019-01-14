@@ -113,7 +113,7 @@ TEST(BasicMixtedTypes, test_SmartObjectUnitTest) {
   ASSERT_EQ('A', obj.asChar()) << "Wrong cast to char";
 
   obj = 3.14;
-  ASSERT_EQ(3.14, obj.asDouble()) << "Wrong cast to double";
+  ASSERT_DOUBLE_EQ(3.14, obj.asDouble()) << "Wrong cast to double";
 
   // array test
   for (int i = 0; i < 100; i++) {
@@ -195,7 +195,7 @@ TEST(ConstructorsTest, test_SmartObjectUnitTest) {
   ASSERT_EQ('R', obj_char.asChar()) << "Wrong constructor with char param";
 
   SmartObject obj_double(-0.4321);
-  ASSERT_EQ(-0.4321, obj_double.asDouble())
+  ASSERT_DOUBLE_EQ(-0.4321, obj_double.asDouble())
       << "Wrong constructor with double param";
 
   SmartObject obj_bool(true);
@@ -262,19 +262,19 @@ TEST(FromString, TypeConversion) {
   {
     // String to double
     SmartObject obj;
-    ASSERT_EQ(invalid_double_value, obj.asDouble());
+    ASSERT_DOUBLE_EQ(invalid_double_value, obj.asDouble());
     obj = "1234";
-    ASSERT_EQ(1234, obj.asDouble());
+    ASSERT_DOUBLE_EQ(1234, obj.asDouble());
     obj = "-0.1234";
-    ASSERT_EQ(-0.1234, obj.asDouble());
+    ASSERT_DOUBLE_EQ(-0.1234, obj.asDouble());
     obj = ".54321";
-    ASSERT_EQ(.54321, obj.asDouble());
+    ASSERT_DOUBLE_EQ(.54321, obj.asDouble());
     obj = "123.45.6";
-    ASSERT_EQ(invalid_double_value, obj.asDouble());
+    ASSERT_DOUBLE_EQ(invalid_double_value, obj.asDouble());
     obj = "123 wtf";
-    ASSERT_EQ(invalid_double_value, obj.asDouble());
+    ASSERT_DOUBLE_EQ(invalid_double_value, obj.asDouble());
     obj = " 0.5";
-    ASSERT_EQ(0.5, obj.asDouble());
+    ASSERT_DOUBLE_EQ(0.5, obj.asDouble());
   }
   {
     // String to Map
@@ -288,7 +288,7 @@ TEST(FromString, TypeConversion) {
     SmartObject obj;
     ASSERT_EQ(invalid_bool_value, obj[0].asBool());
     obj = "this is not an array";
-    ASSERT_EQ(invalid_double_value, obj[0].asDouble());
+    ASSERT_DOUBLE_EQ(invalid_double_value, obj[0].asDouble());
   }
   {
     // String to Binary
@@ -308,7 +308,7 @@ TEST(FromBool, TypeConversion) {
   ASSERT_TRUE(obj.asBool());
   ASSERT_EQ(1, obj.asInt());
   ASSERT_EQ(invalid_char_value, obj.asChar());
-  ASSERT_EQ(1.0, obj.asDouble());
+  ASSERT_DOUBLE_EQ(1.0, obj.asDouble());
   ASSERT_EQ(invalid_int_value, obj["key"].asInt());
   ASSERT_EQ(invalid_char_value, obj[0].asChar());
   ASSERT_EQ(invalid_binary_value, obj.asBinary());
@@ -319,7 +319,7 @@ TEST(FromBool, TypeConversion) {
   ASSERT_FALSE(obj.asBool());
   ASSERT_EQ(0, obj.asBool());
   ASSERT_EQ(invalid_char_value, obj.asChar());
-  ASSERT_EQ(0, obj.asDouble());
+  ASSERT_DOUBLE_EQ(0, obj.asDouble());
   ASSERT_EQ(invalid_int_value, obj["key"].asInt());
   ASSERT_EQ(invalid_char_value, obj[0].asChar());
   ASSERT_EQ(invalid_binary_value, obj.asBinary());
@@ -333,7 +333,7 @@ TEST(FromInt, TypeConversion) {
   ASSERT_EQ("123", obj.asString());
   ASSERT_TRUE(obj.asBool());
   ASSERT_EQ(invalid_char_value, obj.asChar());
-  ASSERT_EQ(123.0, obj.asDouble());
+  ASSERT_DOUBLE_EQ(123.0, obj.asDouble());
   ASSERT_EQ(invalid_binary_value, obj.asBinary());
 
   obj = 5;
@@ -350,7 +350,7 @@ TEST(FromInt, TypeConversion) {
   obj = -1234;
   ASSERT_EQ(-1234, obj.asInt());
   ASSERT_EQ("-1234", obj.asString());
-  ASSERT_EQ(-1234.0, obj.asDouble());
+  ASSERT_DOUBLE_EQ(-1234.0, obj.asDouble());
   ASSERT_EQ(invalid_char_value, obj.asChar());
   ASSERT_TRUE(obj.asBool());
   ASSERT_EQ(invalid_binary_value, obj.asBinary());
@@ -364,7 +364,7 @@ TEST(FromChar, TypeConversion) {
   ASSERT_EQ("1", obj.asString());
   ASSERT_EQ(invalid_int_value, obj.asInt());
   ASSERT_EQ('1', obj.asChar());
-  ASSERT_EQ(invalid_double_value, obj.asDouble());
+  ASSERT_DOUBLE_EQ(invalid_double_value, obj.asDouble());
   ASSERT_EQ(invalid_int_value, obj["key"].asInt());
   ASSERT_EQ(invalid_char_value, obj[0].asChar());
   ASSERT_EQ(invalid_binary_value, obj.asBinary());
@@ -374,7 +374,7 @@ TEST(FromChar, TypeConversion) {
   ASSERT_EQ("0", obj.asString());
   ASSERT_EQ(invalid_int_value, obj.asInt());
   ASSERT_EQ('0', obj.asChar());
-  ASSERT_EQ(invalid_double_value, obj.asDouble());
+  ASSERT_DOUBLE_EQ(invalid_double_value, obj.asDouble());
   ASSERT_EQ(invalid_int_value, obj["key"].asInt());
   ASSERT_EQ(invalid_char_value, obj[0].asChar());
   ASSERT_EQ(invalid_binary_value, obj.asBinary());
@@ -387,7 +387,7 @@ TEST(FromDouble, TypeConversion) {
   ASSERT_EQ("0.1", obj.asString());  // FIXME: result 0.100000
   ASSERT_EQ(0, obj.asInt());
   ASSERT_EQ(invalid_char_value, obj.asChar());
-  ASSERT_EQ(0.1, obj.asDouble());
+  ASSERT_DOUBLE_EQ(0.1, obj.asDouble());
   ASSERT_TRUE(obj.asBool());
   ASSERT_EQ(invalid_binary_value, obj.asBinary());
 
@@ -416,7 +416,7 @@ TEST(FromMap, TypeConversion) {
   ASSERT_EQ(invalid_string_value, obj.asString());
   ASSERT_EQ(invalid_int_value, obj.asInt());
   ASSERT_EQ(invalid_char_value, obj.asChar());
-  ASSERT_EQ(invalid_double_value, obj.asDouble());
+  ASSERT_DOUBLE_EQ(invalid_double_value, obj.asDouble());
   ASSERT_EQ(123, obj["key1"].asInt());
   ASSERT_EQ(invalid_char_value, obj[0].asChar());
   ASSERT_EQ(invalid_binary_value, obj.asBinary());
@@ -431,7 +431,7 @@ TEST(FromArray, TypeConversion) {
   ASSERT_EQ(invalid_string_value, obj.asString());
   ASSERT_EQ(invalid_int_value, obj.asInt());
   ASSERT_EQ(invalid_char_value, obj.asChar());
-  ASSERT_EQ(invalid_double_value, obj.asDouble());
+  ASSERT_DOUBLE_EQ(invalid_double_value, obj.asDouble());
   ASSERT_EQ('A', obj[0].asChar());
   ASSERT_EQ(invalid_int_value, obj["key1"].asInt());
   ASSERT_EQ(invalid_binary_value, obj.asBinary());
@@ -454,7 +454,7 @@ TEST_F(TestHelper, AssignmentTest) {
   objSrc = 0.5;
   objDst = 4;
   objDst = objSrc;
-  ASSERT_EQ(0.5, objDst.asDouble()) << "Wrong assignment for double object";
+  ASSERT_DOUBLE_EQ(0.5, objDst.asDouble()) << "Wrong assignment for double object";
 
   objSrc = true;
   objDst = false;

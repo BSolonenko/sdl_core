@@ -58,5 +58,6 @@ set(SOURCES
 
 create_test(generator_test "${SOURCES}" "${LIBRARIES}")
 file(COPY ${XML_NAME} DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
+file(COPY ${XML_NAME} DESTINATION ${TEST_BIN_DIR})
 
 add_dependencies("generator_test" generate_version)
