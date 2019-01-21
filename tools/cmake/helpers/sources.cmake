@@ -143,10 +143,9 @@ function(create_test NAME SOURCES LIBS)
 
   set(match_string  "${CMAKE_INSTALL_PREFIX}")
   set(replace_string "${CMAKE_INSTALL_PREFIX}/tests")
-  string(REPLACE ${match_string} ${replace_string} TEST_BIN_DIR ${CMAKE_CURRENT_BINARY_DIR})
-  string(REPLACE "/test" "" TEST_BIN_DIR ${TEST_BIN_DIR})
+  string(REPLACE "/test" "" TEST_BIN_DIR ${CMAKE_CURRENT_BINARY_DIR})
+  string(REPLACE ${match_string} ${replace_string} TEST_BIN_DIR ${TEST_BIN_DIR})
   install(TARGETS ${NAME} DESTINATION ${TEST_BIN_DIR})
-
 endfunction()
 
 function(create_cotired_test NAME SOURCES LIBS)
