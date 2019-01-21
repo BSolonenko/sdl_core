@@ -382,14 +382,7 @@ bool AppLaunchDataDB::WriteDb() {
 }
 
 utils::dbms::SQLDatabase* AppLaunchDataDB::db() const {
-#ifdef __QNX__
-  std::unique_ptr<utils::dbms::SQLDatabase> db_qnx(
-      new utils::dbms::SQLDatabase(kDatabaseName));
-  db_qnx.get()->Open();
-  return db_qnx.get();
-#else
   return db_.get();
-#endif  // __QNX__
 }
 
 }  // namespace resumption

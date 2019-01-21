@@ -80,20 +80,23 @@ class ResumptionDataDBTest : public ResumptionDataTest {
   }
   void TearDown() OVERRIDE {
     utils::dbms::SQLQuery query(test_db());
+#ifndef __QNX__
     EXPECT_TRUE(query.Prepare(remove_all_tables));
     EXPECT_TRUE(query.Exec());
+#else
+    EXPECT_TRUE(query.Exec(remove_all_tables));
+#endif //__QNX__
   }
 
   static void SetUpTestCase() {
     kDatabaseName = "resumption";
+#ifndef __QNX__
     if (is_in_file) {
       path_ = "test_storage";
       CreateDirectory(file_system::CurrentWorkingDirectory() + "/" + path_);
       CreateDirectory(kPath);
       test_db_ = new utils::dbms::SQLDatabase(kDatabaseName);
-#ifndef __QNX__
       test_db_->set_path(kPath + "/");
-#endif //__QNX__
       res_db_ = new TestResumptionDataDB(In_File_Storage);
     } else {
       res_db_ = new TestResumptionDataDB(In_Memory_Storage);
@@ -101,8 +104,11 @@ class ResumptionDataDBTest : public ResumptionDataTest {
     }
 
     EXPECT_TRUE(test_db_->Open());
-#ifndef __QNX__
     EXPECT_TRUE(test_db_->IsReadWrite());
+#else
+    test_db_ = new utils::dbms::SQLDatabase(kDatabaseName);
+    res_db_ = new TestResumptionDataDB(In_File_Storage);
+    ASSERT_TRUE(test_db_->Open());
 #endif //__QNX__
   }
 

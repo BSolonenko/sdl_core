@@ -2044,13 +2044,7 @@ const int32_t SQLPTRepresentation::GetDBVersion() const {
 }
 
 utils::dbms::SQLDatabase* SQLPTRepresentation::db() const {
-#ifdef __QNX__
-  utils::dbms::SQLDatabase* db = new utils::dbms::SQLDatabase(kDatabaseName);
-  db->Open();
-  return db;
-#else
   return db_;
-#endif
 }
 
 bool SQLPTRepresentation::CopyApplication(const std::string& source,

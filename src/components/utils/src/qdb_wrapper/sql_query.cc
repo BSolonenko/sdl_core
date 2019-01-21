@@ -102,12 +102,11 @@ SQLQuery::SQLQuery(SQLDatabase* db)
     , error_(Error::OK) {}
 
 SQLQuery::~SQLQuery() {
-  db_->Close();
-  delete db_;
   Finalize();
 }
 
 bool SQLQuery::Prepare(const std::string& query) {
+  Finalize();
   query_ = query;
   statement_ = qdb_stmt_init(db_->conn(), query.c_str(), query.length() + 1);
   if (statement_ == -1) {

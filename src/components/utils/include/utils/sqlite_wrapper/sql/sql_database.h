@@ -49,7 +49,7 @@ enum class StorageType {IN_MEMORY};
  */
 class SQLDatabase {
  public:
-  SQLDatabase(StorageType storage_type);
+  explicit SQLDatabase(Persistent);
   explicit SQLDatabase(const std::string& filename);
   ~SQLDatabase();
 

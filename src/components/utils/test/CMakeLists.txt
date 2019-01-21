@@ -76,6 +76,8 @@ if (CMAKE_SYSTEM_NAME STREQUAL "QNX")
   file(COPY qdbserver.sh DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
   file(COPY test-qdb.ini DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
   file(COPY policy.sql DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
+
+  file(COPY qdb_wrapper/qdbserver.sh DESTINATION   ${CMAKE_INSTALL_PREFIX}/tests)
 else ()
   find_package(Sqlite3 REQUIRED)
   # exclude tests for QDB wrapper

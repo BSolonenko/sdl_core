@@ -130,12 +130,10 @@ bool ResumptionDataDB::Init() {
     return false;
   }
   if (0 == query_checks_resumption.GetInteger(0)) {
-    utils::dbms::SQLQuery query_insert_resumption(db());
-    if (!query_insert_resumption.Prepare(kInsertInitData) ||
-        !query_insert_resumption.Exec()) {
+    if (!query.Exec(kInsertInitData)) {
       LOG4CXX_ERROR(logger_,
                     "Failed insert init data to database: "
-                        << query_insert_resumption.LastError().text());
+                        << query.LastError().text());
       return false;
     }
   }
@@ -2793,13 +2791,7 @@ bool ResumptionDataDB::UpdateGrammarID(const std::string& policy_app_id,
 }
 
 utils::dbms::SQLDatabase* ResumptionDataDB::db() const {
-#ifdef __QNX__
-  utils::dbms::SQLDatabase* db = new utils::dbms::SQLDatabase(kDatabaseName);
-  db->Open();
-  return db;
-#else
   return db_;
-#endif
 }
 
 ApplicationParams::ApplicationParams(
