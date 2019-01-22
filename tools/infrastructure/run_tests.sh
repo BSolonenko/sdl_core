@@ -32,6 +32,7 @@
 
 # Using:
 # use the -V flag for print the test output if the test fails
+VERBOSE=$1
 
 run_test() {
     full_test_name="$1"
@@ -44,14 +45,20 @@ run_test() {
     test_result=`echo $?`
     cd $cur_dir
 
-    if [[ $2 == "-V" && $test_result -ne 0 ]]; then
-        echo "\n $test_output \n"
+    if [[ $test_result -ne 0 ]]; then
+        test_result=1
+        if [[ $2 == "-V" ]]; then
+            echo "\n $test_output \n"
+        fi
     fi
+
+    echo $test_result
 }
 
 print_test_result(){
     test_name=`echo ${1##*/} | sed -r ':l;/.{40}/q;s/.*/&./;bl'`
     cur_test_test_count=`echo $2/$3 | sed -r ':l;/.{5}/q;s/.*/& /;bl'`
+    test_result=$4
 
     if [[ $test_result -eq 0 ]]; then
         test_result_text="   Passed"
@@ -70,9 +77,9 @@ run_all_tests() {
     failed_test_count=0
 
     for i in $tests; do
-        echo "      Start $cur_test: $test_name"
-        run_test "$i" "$1"
-        print_test_result "$i" "$cur_test" "$test_count"
+        echo "      Start $cur_test: ${i##*/}"
+        test_result=`run_test "$i" "$1"`
+        print_test_result "$i" "$cur_test" "$test_count" "$test_result"
         if [[ $test_result -ne 0 ]]; then
             failed_tests="$failed_tests\n      $test_name"
             (( failed_test_count+=1 ))
@@ -84,6 +91,6 @@ run_all_tests() {
     echo "$failed_tests \n"
 }
 
-run_all_tests "$1"
+run_all_tests "$VERBOSE"
 
 exit $failed_test_count
