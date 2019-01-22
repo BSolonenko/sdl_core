@@ -146,6 +146,7 @@ function(create_test NAME SOURCES LIBS)
   string(REPLACE "/test" "" TEST_BIN_DIR ${CMAKE_CURRENT_BINARY_DIR})
   string(REPLACE ${match_string} ${replace_string} TEST_BIN_DIR ${TEST_BIN_DIR})
   install(TARGETS ${NAME} DESTINATION ${TEST_BIN_DIR})
+  set(TEST_BIN_DIR ${TEST_BIN_DIR} PARENT_SCOPE)
 endfunction()
 
 function(create_cotired_test NAME SOURCES LIBS)
