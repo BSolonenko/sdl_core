@@ -157,6 +157,14 @@ function(create_cotired_test NAME SOURCES LIBS)
     EXCLUDE_FROM_ALL
     ${SOURCES}
   )
+
+  set(match_string  "${CMAKE_INSTALL_PREFIX}")
+  set(replace_string "${CMAKE_INSTALL_PREFIX}/tests")
+  string(REPLACE "/test" "" TEST_BIN_DIR ${CMAKE_CURRENT_BINARY_DIR})
+  string(REPLACE ${match_string} ${replace_string} TEST_BIN_DIR ${TEST_BIN_DIR})
+  install(TARGETS ${NAME} DESTINATION ${TEST_BIN_DIR})
+  set(TEST_BIN_DIR ${TEST_BIN_DIR} PARENT_SCOPE)
+
   # TODO: Fix problems with Cotire on Windows and Qt APPLINK-28060
   if(${USE_COTIRE} AND (${CMAKE_SYSTEM_NAME} MATCHES "Linux"))
     include(${CMAKE_SOURCE_DIR}/tools/cmake/helpers/cotire.cmake)
