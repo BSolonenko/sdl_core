@@ -1,14 +1,19 @@
 # This script star QDB server for SDL
 # Need superuser to start qdb
 DB_RESUMPTION_PATH=$PWD/resumption
-POLICY_PATH=$PWD/policy
+DB_POLICY_PATH=$PWD/policy
+DB_BACKUP_PATH=$PWD/backup
 # Creating storage for the resumption
 if [ ! -d $DB_RESUMPTION_PATH ] ; then
    mkdir -p $DB_RESUMPTION_PATH
 fi
+# Creating storage for the backup
+if [ ! -d $DB_BACKUP_PATH ] ; then
+   mkdir -p $DB_BACKUP_PATH
+fi
 # Creating policy for the resumption
-if [ ! -d $POLICY_PATH ] ; then
-   mkdir -p $POLICY_PATH
+if [ ! -d $DB_POLICY_PATH ] ; then
+   mkdir -p $DB_POLICY_PATH
 fi
 # Run PPS service
 if ! pidin | grep pps > /dev/null
@@ -29,7 +34,8 @@ fi
 # If all the above conditions are met, the QDB sets the internal temporary storage to the value of TMPDIR.
 # If any of the above conditions are not met, the QDB logs errors to the slog and fails to start up.
 echo Filename::$DB_RESUMPTION_PATH/resumption > /pps/qnx/qdb/config/resumption
-echo Filename::$POLICY_PATH/resumption > /pps/qnx/qdb/config/policy
+echo BackupDir::$DB_BACKUP_PATH >> /pps/qnx/qdb/config/resumption
+echo Filename::$DB_POLICY_PATH/policy > /pps/qnx/qdb/config/policy
 if ! pidin | grep qdb > /dev/null
 then
    qdb -Otempstore=/tmp

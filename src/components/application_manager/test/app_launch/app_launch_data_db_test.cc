@@ -89,6 +89,7 @@ class AppLaunchDataDBTest : public ::testing::Test {
         .WillByDefault(Return(5u));
     ON_CALL(mock_app_launch_settings_, app_launch_retry_wait_time())
         .WillByDefault(Return(500u));
+#ifndef __QNX__
     if (is_in_file) {
       res_db_.reset(
           new AppLaunchDataDB(mock_app_launch_settings_, In_File_Storage));
@@ -96,6 +97,10 @@ class AppLaunchDataDBTest : public ::testing::Test {
       res_db_.reset(
           new AppLaunchDataDB(mock_app_launch_settings_, In_Memory_Storage));
     }
+#else
+    res_db_.reset(
+              new AppLaunchDataDB(mock_app_launch_settings_, In_File_Storage));
+#endif //__QNX__
     test_db_ = (res_db_->db());
 
     EXPECT_TRUE(test_db()->Open());
