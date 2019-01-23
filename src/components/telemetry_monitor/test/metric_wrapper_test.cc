@@ -58,9 +58,9 @@ TEST(MetricWrapper, GetJsonMetricWithoutGrab) {
 
 TEST(MetricWrapper, GetJsonMetricWithGrabResources) {
   MetricWrapper metric_test;
-  utils::ResourseUsage* resources = utils::Resources::getCurrentResourseUsage();
-  EXPECT_TRUE(resources != NULL);
   EXPECT_TRUE(metric_test.grabResources());
+  utils::ResourseUsage* resources = metric_test.getResources();
+
   Json::Value jvalue = metric_test.GetJsonMetric();
 
   EXPECT_TRUE(jvalue[strings::stime].isInt());
@@ -70,11 +70,9 @@ TEST(MetricWrapper, GetJsonMetricWithGrabResources) {
   EXPECT_NE("null/n", jvalue[strings::utime].toStyledString());
   EXPECT_NE("null/n", jvalue[strings::memory].toStyledString());
 
-  EXPECT_NEAR(resources->stime, jvalue[strings::stime].asInt(), 1);
-  EXPECT_NEAR(resources->utime, jvalue[strings::utime].asInt(), 1);
+  EXPECT_EQ(resources->stime, jvalue[strings::stime].asInt());
+  EXPECT_EQ(resources->utime, jvalue[strings::utime].asInt());
   EXPECT_EQ(resources->memory, jvalue[strings::memory].asInt());
-
-  delete resources;
 }
 
 }  // namespace telemetry_monitor_test

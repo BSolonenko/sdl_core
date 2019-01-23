@@ -85,8 +85,8 @@ TEST(ApplicationManagerMetricWrapper, GetJsonMetric) {
 
 TEST(ApplicationManagerMetricWrapper, GetJsonMetricWithGrabResources) {
   ApplicationManagerMetricWrapper metric_test;
-  utils::ResourseUsage* resources = utils::Resources::getCurrentResourseUsage();
   EXPECT_TRUE(metric_test.grabResources());
+  utils::ResourseUsage* resources = metric_test.getResources();
 
   date_time::TimeDuration start_time = date_time::seconds(1);
 
@@ -118,14 +118,13 @@ TEST(ApplicationManagerMetricWrapper, GetJsonMetricWithGrabResources) {
   EXPECT_EQ(date_time::getuSecs(end_time),
             jvalue[telemetry_monitor::strings::end].asInt64());
 
-  EXPECT_NEAR(
-      resources->stime, jvalue[telemetry_monitor::strings::stime].asInt(), 1);
-  EXPECT_NEAR(
-      resources->utime, jvalue[telemetry_monitor::strings::utime].asInt(), 1);
+  EXPECT_EQ(
+      resources->stime, jvalue[telemetry_monitor::strings::stime].asInt64());
+  EXPECT_EQ(
+      resources->utime, jvalue[telemetry_monitor::strings::utime].asInt64());
   EXPECT_EQ(resources->memory,
-            jvalue[telemetry_monitor::strings::memory].asInt());
+            jvalue[telemetry_monitor::strings::memory].asInt64());
 
-  delete resources;
 }
 
 }  // namespace telemetry_monitor_test
