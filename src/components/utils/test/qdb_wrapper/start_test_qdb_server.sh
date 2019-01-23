@@ -3,6 +3,7 @@
 DB_RESUMPTION_PATH=$PWD/resumption
 DB_POLICY_PATH=$PWD/policy
 DB_BACKUP_PATH=$PWD/backup
+DB_TEST_PATH=$PDW/test_database
 # Creating storage for the resumption
 if [ ! -d $DB_RESUMPTION_PATH ] ; then
    mkdir -p $DB_RESUMPTION_PATH
@@ -11,9 +12,13 @@ fi
 if [ ! -d $DB_BACKUP_PATH ] ; then
    mkdir -p $DB_BACKUP_PATH
 fi
-# Creating policy for the resumption
+# Creating policy for the policy
 if [ ! -d $DB_POLICY_PATH ] ; then
    mkdir -p $DB_POLICY_PATH
+fi
+# Creating policy for the test
+if [ ! -d $DB_TEST_PATH ] ; then
+   mkdir -p $DB_TEST_PATH
 fi
 # Run PPS service
 if ! pidin | grep pps > /dev/null
@@ -36,6 +41,7 @@ fi
 echo Filename::$DB_RESUMPTION_PATH/resumption > /pps/qnx/qdb/config/resumption
 echo BackupDir::$DB_BACKUP_PATH >> /pps/qnx/qdb/config/resumption
 echo Filename::$DB_POLICY_PATH/policy > /pps/qnx/qdb/config/policy
+echo Filename::$DB_TEST_PATH/test_database > /pps/qnx/qdb/config/test_database
 if ! pidin | grep qdb > /dev/null
 then
    qdb -Otempstore=/tmp

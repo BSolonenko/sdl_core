@@ -132,6 +132,11 @@ set(CMAKE_EXE_LINKER_FLAGS
   "${CMAKE_EXE_LINKER_FLAGS} -Wl,-rpath=${CMAKE_CURRENT_BINARY_DIR}"
 )
 create_test("application_manager_test" "${testSources}" "${LIBRARIES}")
+file(COPY hmi_capabilities.json DESTINATION ${TEST_BIN_DIR})
+file(COPY hmi_capabilities_sc1.json DESTINATION ${TEST_BIN_DIR})
+file(COPY hmi_capabilities_sc2.json DESTINATION ${TEST_BIN_DIR})
+file(COPY sdl_preloaded_pt.json DESTINATION ${TEST_BIN_DIR})
+
 create_test("application_manager_mock_hmi_test" "${testSourcesMockHmi}" "${LIBRARIES}")
 
 create_test("help_prompt_manager_test" "${testSourcesHelpPromptManager}" "${LIBRARIES}")

@@ -113,7 +113,11 @@ class ResumptionSqlQueriesTest : public ::testing::Test {
   static const int timeStamp2;
 
   static void SetUpTestCase() {
+#ifndef __QNX__
     db_ = new SQLDatabase(utils::dbms::StorageType::IN_MEMORY);
+#else
+    db_ = new SQLDatabase(kDatabaseName);
+#endif // __QNX__
     ASSERT_TRUE(db_->Open());
 #ifndef __QNX__
     ASSERT_TRUE(db_->IsReadWrite());
@@ -465,7 +469,6 @@ SQLQuery& ResumptionSqlQueriesTest::FillImageTable(SQLQuery& query,
   EXPECT_TRUE(query.Prepare(kInsertImage));
   query.Bind(0, image_type);
   query.Bind(1, value);
-  query.Bind(2, is_template);
   EXPECT_TRUE(query.Exec());
   return query;
 }
