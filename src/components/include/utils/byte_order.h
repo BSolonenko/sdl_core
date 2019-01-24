@@ -35,12 +35,20 @@
 
 #ifdef __QNX__
 #include <gulliver.h>
-#define BE_TO_LE32(x) ENDIAN_SWAP32(&(x));
-#define LE_TO_BE32(x) ENDIAN_SWAP32(&(x));
+#include <iostream>
+/*
+void ENDIAN_SWAP32( uint32_t * num );
+The ENDIAN_SWAP32() macro endian-swaps the value pointed to by num
+in place. Therefore, copying is necessary so as not to damage the
+original data.
+*/
+#define BYTE_SWAP_32 [](uint32_t tmp){return ENDIAN_SWAP32(&tmp);}
 #else
 #include <byteswap.h>
-#define BE_TO_LE32(x) bswap_32(x)
-#define LE_TO_BE32(x) bswap_32(x)
+#define BYTE_SWAP_32(x) bswap_32(x)
 #endif
+
+#define BE_TO_LE32(x) BYTE_SWAP_32(x)
+#define LE_TO_BE32(x) BYTE_SWAP_32(x)
 
 #endif  // SRC_COMPONENTS_INCLUDE_UTILS_BYTE_ORDER_H_

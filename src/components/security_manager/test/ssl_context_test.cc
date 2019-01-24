@@ -30,6 +30,13 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
+#ifndef LOG
+#include <iostream>
+using  std::cout;
+using  std::endl;
+#define LOG cout << __FILE__ << ":" << __LINE__ << " " << __FUNCTION__ << "() | "
+#endif
+
 #include "gtest/gtest.h"
 #include <fstream>
 #include <sstream>
@@ -571,6 +578,8 @@ TEST_F(SSLTest, OnTSL2Protocol_EcncryptionFail) {
 }
 
 TEST_P(SSLTestParam, ClientAndServerNotTLSv1_2_HandshakeFailed) {
+
+  LOG << " " << client_buf_len << endl;
   ASSERT_EQ(security_manager::SSLContext::Handshake_Result_AbnormalFail,
             client_ctx_->StartHandshake(&kClientBuf, &client_buf_len));
 

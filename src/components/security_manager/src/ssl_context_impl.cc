@@ -29,6 +29,13 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
+#ifndef LOG
+#include <iostream>
+using  std::cout;
+using  std::endl;
+#define LOG cout << __FILE__ <<":"<< __LINE__ << " " << __FUNCTION__ << "() | "
+#endif
+
 #include "security_manager/crypto_manager_impl.h"
 
 #include <assert.h>
@@ -80,6 +87,7 @@ SSLContext::HandshakeResult CryptoManagerImpl::SSLContextImpl::StartHandshake(
     const uint8_t** const out_data, size_t* out_data_size) {
   LOG4CXX_AUTO_TRACE(logger_);
   is_handshake_pending_ = true;
+  LOG << endl;
   return DoHandshakeStep(NULL, 0, out_data, out_data_size);
 }
 
@@ -376,11 +384,13 @@ CryptoManagerImpl::SSLContextImpl::PerformHandshake() {
   LOG4CXX_AUTO_TRACE(logger_);
   const int handshake_result = SSL_do_handshake(connection_);
   LOG4CXX_TRACE(logger_, "Handshake result: " << handshake_result);
+  LOG << handshake_result << endl;
   if (handshake_result == 1) {
     const HandshakeResult result = CheckCertContext();
     if (result != Handshake_Result_Success) {
       ResetConnection();
       is_handshake_pending_ = false;
+        LOG<<result<< endl;
       return result;
     }
 
@@ -397,9 +407,11 @@ CryptoManagerImpl::SSLContextImpl::PerformHandshake() {
     LOG4CXX_DEBUG(logger_, "SSL handshake failed");
     SSL_clear(connection_);
     is_handshake_pending_ = false;
+    LOG << endl;
     return Handshake_Result_Fail;
   } else {
     const int error = SSL_get_error(connection_, handshake_result);
+    LOG << "ERROR " << error << endl;
     if (error != SSL_ERROR_WANT_READ) {
       const long error = SSL_get_verify_result(connection_);
       SetHandshakeError(error);
@@ -413,11 +425,14 @@ CryptoManagerImpl::SSLContextImpl::PerformHandshake() {
       // In case error happened but ssl verification shows OK
       // method will return AbnormalFail.
       if (X509_V_OK == error) {
+        LOG << "Handshake_Result_AbnormalFail"<< endl;
         return Handshake_Result_AbnormalFail;
       }
+      LOG << endl;
       return openssl_error_convert_to_internal(error);
     }
   }
+  LOG << endl;
   return Handshake_Result_Success;
 }
 
@@ -434,16 +449,19 @@ SSLContext::HandshakeResult CryptoManagerImpl::SSLContextImpl::DoHandshakeStep(
 
   // TODO(Ezamakhov): add test - hanshake fail -> restart StartHandshake
   {
+    LOG << endl;
     sync_primitives::AutoLock locker(bio_locker);
 
     if (SSL_is_init_finished(connection_)) {
       LOG4CXX_DEBUG(logger_, "SSL initilization is finished");
       is_handshake_pending_ = false;
+       LOG << endl;
       return Handshake_Result_Success;
     }
   }
 
   if (!WriteHandshakeData(in_data, in_data_size)) {
+     LOG << endl;
     return Handshake_Result_AbnormalFail;
   }
 
@@ -451,13 +469,15 @@ SSLContext::HandshakeResult CryptoManagerImpl::SSLContextImpl::DoHandshakeStep(
 
   const HandshakeResult res = PerformHandshake();
   if (res != Handshake_Result_Success) {
+     LOG << endl;
     return res;
   }
 
   if (!ReadHandshakeData(out_data, out_data_size)) {
+     LOG << endl;
     return Handshake_Result_AbnormalFail;
   }
-
+ LOG << endl;
   return res;
 }
 

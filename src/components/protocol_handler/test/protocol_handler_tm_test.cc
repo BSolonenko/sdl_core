@@ -29,6 +29,15 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
+
+#ifndef LOG
+#include <iostream>
+using  std::cout;
+using  std::endl;
+#define LOG cout << __FILE__ <<":"<< __LINE__ << " " << __FUNCTION__ << "() | "
+#endif
+
+
 #include "gtest/gtest.h"
 #include <string>
 #include "protocol_handler/protocol_handler.h"
