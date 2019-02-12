@@ -113,18 +113,18 @@ void* Thread::threadFunc(void* arg) {
       thread->isThreadRunning_ = true;
       pthread_setcancelstate(PTHREAD_CANCEL_ENABLE, NULL);
       pthread_testcancel();
-
-      thread->state_lock_.Release();
-      thread->delegate_->threadMain();
-
-      thread->state_lock_.Acquire();
+      {
+        sync_primitives::AutoUnlock auto_unlock(thread->state_lock_);
+        thread->delegate_->threadMain();
+      }
       pthread_setcancelstate(PTHREAD_CANCEL_DISABLE, NULL);
       thread->isThreadRunning_ = false;
-      thread->state_lock_.Release();
     }
 
-    thread->state_cond_.Broadcast();
-    thread->state_lock_.Try();
+    {
+      sync_primitives::AutoUnlock auto_unlock(thread->state_lock_);
+      thread->state_cond_.Broadcast();
+    }
     LOG4CXX_DEBUG(logger_,
                   "Thread #" << pthread_self() << " finished iteration");
   }
@@ -251,12 +251,12 @@ bool Thread::start(const ThreadOptions& options) {
       }
     }
   }
-  
-  {    
-    sync_primitives::AutoLock auto_lock(state_lock_);   
+
+  {
+    sync_primitives::AutoLock auto_lock(state_lock_);
     stopped_ = false;
-  }  
-  
+  }
+
   state_cond_.NotifyOne();
   LOG4CXX_DEBUG(logger_,
                 "Thread " << name_ << " #" << handle_ << " started."
