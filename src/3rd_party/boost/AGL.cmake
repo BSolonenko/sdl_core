@@ -40,7 +40,6 @@ set(CONFIGURE_COMMAND
     --prefix=${3RD_PARTY_INSTALL_PREFIX}
     COMMAND echo ${BOOST_AGL_PROJECT_CONFIG_JAM} $<SEMICOLON> >> ./project-config.jam)
 
-set(BOOST_CXX_FLAGS $ENV{CXXFLAGS})
 set(BUILD_COMMAND
   ./b2 toolset=gcc-agl)
 
