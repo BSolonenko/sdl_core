@@ -217,18 +217,7 @@ class SQLQuery {
    */
   int statement_;
 
-  /**
-   * Containers for keeping bind data
-   */
-  std::vector<std::pair<int, int64_t> > int_binds_;
-  std::vector<std::pair<int, double> > double_binds_;
-  std::vector<std::pair<int, std::string> > string_binds_;
-  std::vector<int> null_binds_;
-
-  /**
-   * The array for binging data to the prepare query
-   */
-  qdb_binding_t* bindings_;
+  std::vector<qdb_binding_t> binds_;
 
   /**
    * Lock for guarding bindings

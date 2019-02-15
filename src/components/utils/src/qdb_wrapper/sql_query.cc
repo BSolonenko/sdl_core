@@ -43,59 +43,10 @@ namespace dbms {
 
 CREATE_LOGGERPTR_GLOBAL(logger_, "Utils")
 
-class SetBindInteger {
- public:
-  explicit SetBindInteger(qdb_binding_t* array) : array_(array) {}
-  void operator()(const std::pair<int, int64_t>& x) {
-    // In QDB the number of position for binding starts since 1.
-    QDB_SETARRAYBIND_INT(array_, x.first + 1, x.second);
-  }
-
- private:
-  qdb_binding_t* array_;
-};
-
-class SetBindReal {
- public:
-  explicit SetBindReal(qdb_binding_t* array) : array_(array) {}
-  void operator()(const std::pair<int, double>& x) {
-    // In QDB the number of position for binding starts since 1.
-    QDB_SETARRAYBIND_REAL(array_, x.first + 1, x.second);
-  }
-
- private:
-  qdb_binding_t* array_;
-};
-
-class SetBindText {
- public:
-  explicit SetBindText(qdb_binding_t* array) : array_(array) {}
-  void operator()(const std::pair<int, std::string>& x) {
-    // In QDB the number of position for binding starts since 1.
-    QDB_SETARRAYBIND_TEXT(array_, x.first + 1, x.second.c_str());
-  }
-
- private:
-  qdb_binding_t* array_;
-};
-
-class SetBindNull {
- public:
-  explicit SetBindNull(qdb_binding_t* array) : array_(array) {}
-  void operator()(int x) {
-    // In QDB the number of position for binding starts since 1.
-    QDB_SETARRAYBIND_NULL(array_, x + 1);
-  }
-
- private:
-  qdb_binding_t* array_;
-};
-
 SQLQuery::SQLQuery(SQLDatabase* db)
     : db_(db)
     , query_("")
     , statement_(-1)
-    , bindings_(NULL)
     , result_(NULL)
     , current_row_(0)
     , rows_(0)
@@ -118,20 +69,7 @@ bool SQLQuery::Prepare(const std::string& query) {
 }
 
 uint8_t SQLQuery::SetBinds() {
-  uint8_t binding_count = int_binds_.size() + double_binds_.size() +
-                          string_binds_.size() + null_binds_.size();
-
-  bindings_ = new qdb_binding_t[binding_count];
-
-  std::for_each(
-      int_binds_.begin(), int_binds_.end(), SetBindInteger(bindings_));
-  std::for_each(
-      double_binds_.begin(), double_binds_.end(), SetBindReal(bindings_));
-  std::for_each(
-      string_binds_.begin(), string_binds_.end(), SetBindText(bindings_));
-  std::for_each(null_binds_.begin(), null_binds_.end(), SetBindNull(bindings_));
-
-  return binding_count;
+  return binds_.size();
 }
 
 bool SQLQuery::Result() {
@@ -155,8 +93,7 @@ bool SQLQuery::Exec() {
     return true;
 
   current_row_ = 0;
-  uint8_t binding_count = SetBinds();
-  if (qdb_stmt_exec(db_->conn(), statement_, bindings_, binding_count) == -1) {
+  if (binds_.empty() || qdb_stmt_exec(db_->conn(), statement_, &binds_[0], (uint8_t)binds_.size()) == -1) {
     error_ = Error::ERROR;
     return false;
   }
@@ -170,12 +107,7 @@ bool SQLQuery::Next() {
 
 bool SQLQuery::Reset() {
   sync_primitives::AutoLock auto_lock(bindings_lock_);
-  int_binds_.clear();
-  double_binds_.clear();
-  string_binds_.clear();
-  null_binds_.clear();
-  delete[] bindings_;
-  bindings_ = NULL;
+  binds_.clear();
   rows_ = 0;
   current_row_ = 0;
   if (result_ && qdb_freeresult(result_) == -1) {
@@ -204,15 +136,30 @@ bool SQLQuery::Exec(const std::string& query) {
 }
 
 void SQLQuery::Bind(int pos, int value) {
-  int_binds_.push_back(std::make_pair(pos, value));
+  qdb_binding_t bind;
+  bind.index = pos + 1;
+  bind.type = QDB_INTEGER;
+  bind.len = sizeof(value);
+  bind.data = &value;
+  binds_.push_back(bind);
 }
 
 void SQLQuery::Bind(int pos, int64_t value) {
-  int_binds_.push_back(std::make_pair(pos, value));
+  qdb_binding_t bind;
+  bind.index = pos + 1;
+  bind.type = QDB_INTEGER;
+  bind.len = sizeof(value);
+  bind.data = &value;
+  binds_.push_back(bind);
 }
 
 void SQLQuery::Bind(int pos, double value) {
-  double_binds_.push_back(std::make_pair(pos, value));
+  qdb_binding_t bind;
+  bind.index = pos + 1;
+  bind.type = QDB_REAL;
+  bind.len = sizeof(value);
+  bind.data = &value;
+  binds_.push_back(bind);
 }
 
 void SQLQuery::Bind(int pos, bool value) {
@@ -220,11 +167,21 @@ void SQLQuery::Bind(int pos, bool value) {
 }
 
 void SQLQuery::Bind(int pos, const std::string& value) {
-  string_binds_.push_back(std::make_pair(pos, value));
+  qdb_binding_t bind;
+  bind.index = pos + 1;
+  bind.type = QDB_TEXT;
+  bind.len = strlen(value.c_str());
+  bind.data = value.c_str();
+  binds_.push_back(bind);
 }
 
 void SQLQuery::Bind(int pos) {
-  null_binds_.push_back(pos);
+  qdb_binding_t bind;
+  bind.index = pos + 1;
+  bind.type = QDB_NULL;
+  bind.len = 0;
+  bind.data = NULL;
+  binds_.push_back(bind);
 }
 
 bool SQLQuery::GetBoolean(int pos) const {
