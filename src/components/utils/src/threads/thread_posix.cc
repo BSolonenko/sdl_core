@@ -61,8 +61,10 @@ size_t Thread::kMinStackSize =
 void Thread::cleanup(void* arg) {
   LOG4CXX_AUTO_TRACE(logger_);
   Thread* thread = reinterpret_cast<Thread*>(arg);
-  sync_primitives::AutoLock auto_lock(thread->state_lock_);
-  thread->isThreadRunning_ = false;
+  {
+    sync_primitives::AutoLock auto_lock(thread->state_lock_);
+    thread->isThreadRunning_ = false;
+  }
   thread->state_cond_.Broadcast();
 }
 
@@ -87,49 +89,49 @@ void* Thread::threadFunc(void* arg) {
   pthread_cleanup_push(&cleanup, thread);
 
   {
-  	/*
-  	 This is not a lock for acquiring another lock.
-	 This code part ensures correct notification sequence between Thread::start and threadFunc.
-	 In Thread::start function after thread is created, we call Wait(),
-	 but we cannot guarantee order of precedence of the following calls :
-	 "Wait() in Thread::start" or "Broadcast in threadFunc".
-	 sync_primitives::AutoLock auto_lock(thread->run_lock_); - is used to guarantee call to
-	 "Wait() in Thread::start" before Broadcast.
-    */
-    sync_primitives::AutoLock auto_lock(thread->run_lock_);
-    thread->state_lock_.Acquire();
-  }
+    // This is not a lock for acquiring another lock.
+    // This code part ensures correct notification sequence between
+    // Thread::start and threadFunc.
+    // In Thread::start function after thread is created, we call Wait(),
+    // but we cannot guarantee order of precedence of the following calls :
+    // "Wait() in Thread::start" or "Broadcast in threadFunc".
+    // sync_primitives::AutoLock auto_lock(thread->run_lock_); - is used to
+    // guarantee call to
+    // "Wait() in Thread::start" before Broadcast.
 
-  thread->state_cond_.Broadcast();
+    thread->run_lock_.Acquire();
+    sync_primitives::AutoLock auto_lock(thread->state_lock_);
+    thread->run_lock_.Release();
 
-  while (!thread->finalized_) {
-    LOG4CXX_DEBUG(logger_, "Thread #" << pthread_self() << " iteration");
-    thread->state_cond_.Wait(thread->state_lock_);
-    LOG4CXX_DEBUG(logger_,
-                  "Thread #" << pthread_self() << " execute. "
-                             << "stopped_ = " << thread->stopped_
-                             << "; finalized_ = " << thread->finalized_);
-    if (!thread->stopped_ && !thread->finalized_) {
-      thread->isThreadRunning_ = true;
-      pthread_setcancelstate(PTHREAD_CANCEL_ENABLE, NULL);
-      pthread_testcancel();
+    thread->state_cond_.Broadcast();
+
+    while (!thread->finalized_) {
+      LOG4CXX_DEBUG(logger_, "Thread #" << pthread_self() << " iteration");
+      thread->state_cond_.Wait(thread->state_lock_);
+      LOG4CXX_DEBUG(logger_,
+                    "Thread #" << pthread_self() << " execute. "
+                               << "stopped_ = " << thread->stopped_
+                               << "; finalized_ = " << thread->finalized_);
+      if (!thread->stopped_ && !thread->finalized_) {
+        thread->isThreadRunning_ = true;
+        pthread_setcancelstate(PTHREAD_CANCEL_ENABLE, NULL);
+        pthread_testcancel();
+        {
+          sync_primitives::AutoUnlock auto_unlock(thread->state_lock_);
+          thread->delegate_->threadMain();
+        }
+        pthread_setcancelstate(PTHREAD_CANCEL_DISABLE, NULL);
+        thread->isThreadRunning_ = false;
+      }
+
       {
         sync_primitives::AutoUnlock auto_unlock(thread->state_lock_);
-        thread->delegate_->threadMain();
+        thread->state_cond_.Broadcast();
       }
-      pthread_setcancelstate(PTHREAD_CANCEL_DISABLE, NULL);
-      thread->isThreadRunning_ = false;
+      LOG4CXX_DEBUG(logger_,
+                    "Thread #" << pthread_self() << " finished iteration");
     }
-
-    {
-      sync_primitives::AutoUnlock auto_unlock(thread->state_lock_);
-      thread->state_cond_.Broadcast();
-    }
-    LOG4CXX_DEBUG(logger_,
-                  "Thread #" << pthread_self() << " finished iteration");
   }
-
-  thread->state_lock_.Release();
   pthread_cleanup_pop(1);
 
   LOG4CXX_DEBUG(logger_,
@@ -192,7 +194,7 @@ bool Thread::start(const ThreadOptions& options) {
     if (isThreadRunning_) {
       LOG4CXX_TRACE(logger_,
                     "EXIT thread " << name_ << " #" << handle_
-                                  << " is already running");
+                                   << " is already running");
       return true;
     }
 
@@ -201,9 +203,9 @@ bool Thread::start(const ThreadOptions& options) {
     pthread_result = pthread_attr_init(&attributes);
     if (pthread_result != EOK) {
       LOG4CXX_WARN(logger_,
-                  "Couldn't init pthread attributes. Error code = "
-                      << pthread_result << " (\"" << strerror(pthread_result)
-                      << "\")");
+                   "Couldn't init pthread attributes. Error code = "
+                       << pthread_result << " (\"" << strerror(pthread_result)
+                       << "\")");
     }
 
     if (!thread_options_.is_joinable()) {
@@ -211,9 +213,9 @@ bool Thread::start(const ThreadOptions& options) {
           pthread_attr_setdetachstate(&attributes, PTHREAD_CREATE_DETACHED);
       if (pthread_result != EOK) {
         LOG4CXX_WARN(logger_,
-                    "Couldn't set detach state attribute. Error code = "
-                        << pthread_result << " (\"" << strerror(pthread_result)
-                        << "\")");
+                     "Couldn't set detach state attribute. Error code = "
+                         << pthread_result << " (\"" << strerror(pthread_result)
+                         << "\")");
         thread_options_.is_joinable(false);
       }
     }
@@ -223,9 +225,9 @@ bool Thread::start(const ThreadOptions& options) {
       pthread_result = pthread_attr_setstacksize(&attributes, stack_size);
       if (pthread_result != EOK) {
         LOG4CXX_WARN(logger_,
-                    "Couldn't set stacksize = "
-                        << stack_size << ". Error code = " << pthread_result
-                        << " (\"" << strerror(pthread_result) << "\")");
+                     "Couldn't set stacksize = "
+                         << stack_size << ". Error code = " << pthread_result
+                         << " (\"" << strerror(pthread_result) << "\")");
       }
     } else {
       ThreadOptions thread_options_temp(Thread::kMinStackSize,
@@ -288,7 +290,6 @@ void Thread::stop() {
 
 void Thread::join() {
   LOG4CXX_AUTO_TRACE(logger_);
-  DCHECK_OR_RETURN_VOID(!IsCurrentThread());
 
   stop();
 
