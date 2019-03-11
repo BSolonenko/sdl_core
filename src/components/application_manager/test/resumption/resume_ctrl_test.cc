@@ -94,6 +94,7 @@ class ResumeCtrlTest : public ::testing::Test {
     profile::Profile profile_;
     profile_.set_config_file_name("smartDeviceLink.ini");
     resumption_delay_before_ign_ = profile_.resumption_delay_before_ign();
+    hmi_states_ptr_ = std::make_shared<HmiState>(mock_app_, mock_app_mngr_);
   }
 
   virtual void SetUp() OVERRIDE {
@@ -125,6 +126,9 @@ class ResumeCtrlTest : public ::testing::Test {
         .WillByDefault(Return(false));
     ON_CALL(mock_application_manager_settings_, app_resuming_timeout())
         .WillByDefault(ReturnRef(kAppResumingTimeout_));
+
+    ON_CALL(*mock_app_, CurrentHmiState())
+        .WillByDefault(Return(hmi_states_ptr_));
     // use EXPECTED_CALL().Times(AtLeast(0)) instead of ON_CALL to remove
     // warning messages
     EXPECT_CALL(mock_application_manager_settings_,
@@ -166,6 +170,7 @@ class ResumeCtrlTest : public ::testing::Test {
   std::shared_ptr<NiceMock<resumption_test::MockResumptionData> > mock_storage_;
   std::shared_ptr<NiceMock<MockApplication> > mock_app_;
   std::shared_ptr<MockHelpPromptManager> mock_help_prompt_manager_;
+  HmiStatePtr hmi_states_ptr_;
   application_manager::ApplicationConstSharedPtr const_app_;
   const uint32_t kTestAppId_;
   const std::string kTestPolicyAppId_;
