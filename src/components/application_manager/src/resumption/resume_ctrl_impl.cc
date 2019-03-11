@@ -238,6 +238,14 @@ bool ResumeCtrlImpl::SetupDefaultHMILevel(ApplicationSharedPtr application) {
         "High-bandwidth transport not available, default HMI level is set to : "
             << hmi_level);
   }
+
+  if (isResumableHmiLevel(application->CurrentHmiState()->hmi_level())) {
+    LOG4CXX_WARN(logger_,
+                 "application " << application->app_id()
+                                << " already in resumable hmi level");
+    return false;
+  }
+
   return SetAppHMIState(application, hmi_level, false);
 }
 
@@ -900,7 +908,6 @@ bool ResumeCtrlImpl::CheckAppRestrictions(
     ApplicationConstSharedPtr application,
     const smart_objects::SmartObject& saved_app) {
   using namespace mobile_apis;
-  using namespace helpers;
   LOG4CXX_AUTO_TRACE(logger_);
   DCHECK_OR_RETURN(saved_app.keyExists(strings::hmi_level), false);
 
@@ -912,10 +919,7 @@ bool ResumeCtrlImpl::CheckAppRestrictions(
     hmi_level =
         static_cast<HMILevel::eType>(saved_app[strings::hmi_level].asInt());
   }
-  const bool result = Compare<HMILevel::eType, EQ, ONE>(
-                          hmi_level, HMILevel::HMI_FULL, HMILevel::HMI_LIMITED)
-                          ? true
-                          : false;
+  const bool result = isResumableHmiLevel(hmi_level);
   LOG4CXX_DEBUG(logger_,
                 "is_media_app: " << application->is_media_application()
                                  << "; hmi_level: " << hmi_level << "; result: "
@@ -1138,6 +1142,14 @@ mobile_apis::HMILevel::eType ResumeCtrlImpl::GetHmiLevelOnLowBandwidthTransport(
   }
 
   return result_level;
+}
+
+bool ResumeCtrlImpl::isResumableHmiLevel(
+    mobile_apis::HMILevel::eType hmi_level) const {
+  using namespace helpers;
+  using namespace mobile_apis;
+  return helpers::Compare<HMILevel::eType, EQ, ONE>(
+             hmi_level, HMILevel::HMI_FULL, HMILevel::HMI_LIMITED);
 }
 
 static mobile_api::HMILevel::eType PickHigherHmiLevel(

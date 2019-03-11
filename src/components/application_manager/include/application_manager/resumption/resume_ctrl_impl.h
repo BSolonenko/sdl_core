@@ -590,7 +590,10 @@ class ResumeCtrlImpl : public ResumeCtrl,
    */
   mobile_apis::HMILevel::eType GetHmiLevelOnLowBandwidthTransport(
       app_mngr::ApplicationConstSharedPtr application) const;
-
+  /**
+   * @return true if hmi_level is resumable HMI level
+   */
+  bool isResumableHmiLevel(mobile_apis::HMILevel::eType hmi_level) const;
   /**
    *@brief Mapping applications to time_stamps
    *       wait for timer to resume HMI Level
