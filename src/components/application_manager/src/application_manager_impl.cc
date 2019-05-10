@@ -565,12 +565,14 @@ ApplicationSharedPtr ApplicationManagerImpl::RegisterApplication(
 
   HmiStatePtr initial_state =
       CreateRegularState(std::shared_ptr<Application>(application),
+                         mobile_apis::WindowType::MAIN,
                          mobile_apis::HMILevel::INVALID_ENUM,
                          mobile_apis::AudioStreamingState::INVALID_ENUM,
                          mobile_apis::VideoStreamingState::INVALID_ENUM,
                          mobile_api::SystemContext::SYSCTXT_MAIN);
 
-  application->SetInitialState(initial_state);
+  application->SetInitialState(mobile_apis::PredefinedWindows::DEFAULT_WINDOW,
+                               initial_state);
 
   application->set_folder_name(policy_app_id + "_" +
                                application->mac_address());
@@ -1305,11 +1307,13 @@ void ApplicationManagerImpl::SetAllAppsAllowed(const bool allowed) {
 
 HmiStatePtr ApplicationManagerImpl::CreateRegularState(
     std::shared_ptr<Application> app,
-    mobile_apis::HMILevel::eType hmi_level,
-    mobile_apis::AudioStreamingState::eType audio_state,
-    mobile_apis::VideoStreamingState::eType video_state,
-    mobile_apis::SystemContext::eType system_context) const {
+    const mobile_apis::WindowType::eType window_type,
+    const mobile_apis::HMILevel::eType hmi_level,
+    const mobile_apis::AudioStreamingState::eType audio_state,
+    const mobile_apis::VideoStreamingState::eType video_state,
+    const mobile_apis::SystemContext::eType system_context) const {
   HmiStatePtr state(new HmiState(app, *this));
+  state->set_window_type(window_type);
   state->set_hmi_level(hmi_level);
   state->set_audio_streaming_state(audio_state);
   state->set_video_streaming_state(video_state);
@@ -4297,7 +4301,7 @@ void ApplicationManagerImpl::ChangeAppsHMILevel(
   }
   const mobile_apis::HMILevel::eType old_level = app->hmi_level();
   if (old_level != level) {
-    app->set_hmi_level(level);
+    app->set_hmi_level(mobile_apis::PredefinedWindows::DEFAULT_WINDOW, level);
     OnHMILevelChanged(app_id, old_level, level);
   } else {
     LOG4CXX_WARN(logger_, "Redundant changing HMI level: " << level);

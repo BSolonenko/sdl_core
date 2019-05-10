@@ -46,6 +46,7 @@ HmiState::HmiState(std::shared_ptr<Application> app,
                    const ApplicationManager& app_mngr,
                    StateID state_id)
     : hmi_app_id_(app->hmi_app_id())
+    , window_type_(mobile_apis::WindowType::INVALID_ENUM)
     , state_id_(state_id)
     , app_mngr_(app_mngr)
     , hmi_level_(mobile_apis::HMILevel::INVALID_ENUM)
@@ -58,6 +59,7 @@ HmiState::HmiState(std::shared_ptr<Application> app,
 HmiState::HmiState(std::shared_ptr<Application> app,
                    const ApplicationManager& app_mngr)
     : hmi_app_id_(app->hmi_app_id())
+    , window_type_(mobile_apis::WindowType::INVALID_ENUM)
     , state_id_(STATE_ID_REGULAR)
     , app_mngr_(app_mngr)
     , hmi_level_(mobile_apis::HMILevel::INVALID_ENUM)
@@ -94,6 +96,15 @@ bool HmiState::is_mobile_projection_app() const {
   const ApplicationSharedPtr app =
       app_mngr_.application_by_hmi_app(hmi_app_id_);
   return app ? app->mobile_projection_enabled() : false;
+}
+
+void HmiState::set_window_type(
+    const mobile_apis::WindowType::eType window_type) {
+  window_type_ = window_type;
+}
+
+bool HmiState::is_main_window() const {
+  return mobile_apis::WindowType::MAIN == window_type_;
 }
 
 mobile_apis::AudioStreamingState::eType VRHmiState::audio_streaming_state()

@@ -265,19 +265,21 @@ bool ApplicationImpl::IsVideoApplication() const {
   return is_video_app;
 }
 
-void ApplicationImpl::SetRegularState(HmiStatePtr state) {
+void ApplicationImpl::SetRegularState(const WindowID window_id,
+                                      HmiStatePtr state) {
   LOG4CXX_AUTO_TRACE(logger_);
-  state_.AddState(state);
+  state_.AddState(window_id, state);
 }
 
-void ApplicationImpl::RemovePostponedState() {
+void ApplicationImpl::RemovePostponedState(const WindowID window_id) {
   LOG4CXX_AUTO_TRACE(logger_);
-  state_.RemoveState(HmiState::STATE_ID_POSTPONED);
+  state_.RemoveState(window_id, HmiState::STATE_ID_POSTPONED);
 }
 
-void ApplicationImpl::SetPostponedState(HmiStatePtr state) {
+void ApplicationImpl::SetPostponedState(const WindowID window_id,
+                                        HmiStatePtr state) {
   LOG4CXX_AUTO_TRACE(logger_);
-  state_.AddState(state);
+  state_.AddState(window_id, state);
 }
 
 void ApplicationImpl::set_mobile_projection_enabled(bool option) {
@@ -297,22 +299,25 @@ struct StateIDComparator {
   }
 };
 
-void ApplicationImpl::AddHMIState(HmiStatePtr state) {
+void ApplicationImpl::AddHMIState(const WindowID window_id, HmiStatePtr state) {
   LOG4CXX_AUTO_TRACE(logger_);
-  state_.AddState(state);
+  state_.AddState(window_id, state);
 }
 
-void ApplicationImpl::RemoveHMIState(HmiState::StateID state_id) {
+void ApplicationImpl::RemoveHMIState(const WindowID window_id,
+                                     HmiState::StateID state_id) {
   LOG4CXX_AUTO_TRACE(logger_);
-  state_.RemoveState(state_id);
+  state_.RemoveState(window_id, state_id);
 }
 
-const HmiStatePtr ApplicationImpl::CurrentHmiState() const {
-  return state_.GetState(HmiState::STATE_ID_CURRENT);
+const HmiStatePtr ApplicationImpl::CurrentHmiState(
+    const WindowID window_id) const {
+  return state_.GetState(window_id, HmiState::STATE_ID_CURRENT);
 }
 
-const HmiStatePtr ApplicationImpl::RegularHmiState() const {
-  return state_.GetState(HmiState::STATE_ID_REGULAR);
+const HmiStatePtr ApplicationImpl::RegularHmiState(
+    const WindowID window_id) const {
+  return state_.GetState(window_id, HmiState::STATE_ID_REGULAR);
 }
 
 bool ApplicationImpl::IsAllowedToChangeAudioSource() const {
@@ -322,8 +327,9 @@ bool ApplicationImpl::IsAllowedToChangeAudioSource() const {
   return false;
 }
 
-const HmiStatePtr ApplicationImpl::PostponedHmiState() const {
-  return state_.GetState(HmiState::STATE_ID_POSTPONED);
+const HmiStatePtr ApplicationImpl::PostponedHmiState(
+    const WindowID window_id) const {
+  return state_.GetState(window_id, HmiState::STATE_ID_POSTPONED);
 }
 
 const smart_objects::SmartObject* ApplicationImpl::active_message() const {
@@ -354,9 +360,10 @@ bool ApplicationImpl::is_media_application() const {
   return is_media_;
 }
 
-const mobile_api::HMILevel::eType ApplicationImpl::hmi_level() const {
+const mobile_api::HMILevel::eType ApplicationImpl::hmi_level(
+    const WindowID window_id) const {
   using namespace mobile_apis;
-  const HmiStatePtr hmi_state = CurrentHmiState();
+  const HmiStatePtr hmi_state = CurrentHmiState(window_id);
   return hmi_state ? hmi_state->hmi_level() : HMILevel::INVALID_ENUM;
 }
 
@@ -380,9 +387,10 @@ const uint32_t ApplicationImpl::list_files_in_none_count() const {
   return list_files_in_none_count_;
 }
 
-const mobile_api::SystemContext::eType ApplicationImpl::system_context() const {
+const mobile_api::SystemContext::eType ApplicationImpl::system_context(
+    const WindowID window_id) const {
   using namespace mobile_apis;
-  const HmiStatePtr hmi_state = CurrentHmiState();
+  const HmiStatePtr hmi_state = CurrentHmiState(window_id);
   return hmi_state ? hmi_state->system_context() : SystemContext::INVALID_ENUM;
   ;
 }
@@ -930,8 +938,9 @@ bool ApplicationImpl::is_application_data_changed() const {
   return is_application_data_changed_;
 }
 
-void ApplicationImpl::SetInitialState(HmiStatePtr state) {
-  state_.InitState(state);
+void ApplicationImpl::SetInitialState(const WindowID window_id,
+                                      HmiStatePtr state) {
+  state_.InitState(window_id, state);
 }
 
 void ApplicationImpl::set_is_application_data_changed(
@@ -1098,8 +1107,9 @@ void ApplicationImpl::UnsubscribeFromSoftButtons(int32_t cmd_id) {
 }
 
 void ApplicationImpl::set_system_context(
+    const WindowID window_id,
     const mobile_api::SystemContext::eType& system_context) {
-  const HmiStatePtr hmi_state = CurrentHmiState();
+  HmiStatePtr hmi_state = CurrentHmiState(window_id);
   hmi_state->set_system_context(system_context);
 }
 
@@ -1112,13 +1122,22 @@ void ApplicationImpl::set_audio_streaming_state(
                  " for non-media application to different from NOT_AUDIBLE");
     return;
   }
-  CurrentHmiState()->set_audio_streaming_state(state);
+
+  // According to proposal SDL-0216 audio and video streaming states should
+  // be applied for all windows to keep consistency
+  HmiStates hmi_states = state_.GetStates(HmiState::STATE_ID_CURRENT);
+  std::for_each(hmi_states.begin(),
+                hmi_states.end(),
+                [&state](const HmiStatePtr hmi_state) {
+                  hmi_state->set_audio_streaming_state(state);
+                });
 }
 
 void ApplicationImpl::set_hmi_level(
+    const WindowID window_id,
     const mobile_api::HMILevel::eType& new_hmi_level) {
   using namespace mobile_apis;
-  const HMILevel::eType current_hmi_level = hmi_level();
+  const HMILevel::eType current_hmi_level = hmi_level(window_id);
   if (HMILevel::HMI_NONE != current_hmi_level &&
       HMILevel::HMI_NONE == new_hmi_level) {
     put_file_in_none_count_ = 0;

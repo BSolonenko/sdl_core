@@ -545,11 +545,30 @@ class Application : public virtual InitialApplicationData,
   virtual bool is_media_application() const = 0;
   virtual bool is_foreground() const = 0;
   virtual void set_foreground(const bool is_foreground) = 0;
-  virtual const mobile_api::HMILevel::eType hmi_level() const = 0;
+
+  /**
+   * @brief hmi_level current HMI level of application's window
+   * @param window_id id of application's window to get
+   * @return HMI level of application's window
+   */
+  virtual const mobile_api::HMILevel::eType hmi_level(
+      const WindowID window_id = mobile_apis::PredefinedWindows::
+          DEFAULT_WINDOW /*TODO(AKalinich): Decide if we need default value*/)
+      const = 0;
+
   virtual const uint32_t put_file_in_none_count() const = 0;
   virtual const uint32_t delete_file_in_none_count() const = 0;
   virtual const uint32_t list_files_in_none_count() const = 0;
-  virtual const mobile_api::SystemContext::eType system_context() const = 0;
+
+  /**
+   * @brief system_context current system context of application's window
+   * @param window_id id of application's window to get
+   * @return system context of application's window
+   */
+  virtual const mobile_api::SystemContext::eType system_context(
+      const WindowID window_id = mobile_apis::PredefinedWindows::
+          DEFAULT_WINDOW /*TODO(AKalinich): Decide if we need default value*/)
+      const = 0;
   virtual const mobile_api::AudioStreamingState::eType audio_streaming_state()
       const = 0;
   virtual const mobile_api::VideoStreamingState::eType video_streaming_state()
@@ -694,58 +713,68 @@ class Application : public virtual InitialApplicationData,
   /**
    * @brief SetInitialState sets initial HMI state for application on
    * registration
+   * @param window_id window id for HMI state
    * @param state Hmi state value
    */
-  virtual void SetInitialState(HmiStatePtr state) = 0;
+  virtual void SetInitialState(const WindowID window_id, HmiStatePtr state) = 0;
 
   /**
    * @brief SetRegularState set permanent state of application
-   *
+   * @param window_id window id for HMI state
    * @param state state to setup
    */
-  virtual void SetRegularState(HmiStatePtr state) = 0;
+  virtual void SetRegularState(const WindowID window_id, HmiStatePtr state) = 0;
 
   /**
    * @brief SetPostponedState sets postponed state to application.
    * This state could be set as regular later
-   *
+   * @param window_id window id for HMI state
    * @param state state to setup
    */
-  virtual void SetPostponedState(HmiStatePtr state) = 0;
+  virtual void SetPostponedState(const WindowID window_id,
+                                 HmiStatePtr state) = 0;
 
-  virtual void RemovePostponedState() = 0;
+  /**
+   * @brief RemovePostponedState removes postponed state for application
+   * After removal, this state will not be set as regular later
+   * @param window_id window id for HMI state
+   */
+  virtual void RemovePostponedState(const WindowID window_id) = 0;
 
   /**
    * @brief AddHMIState the function that will change application's
    * hmi state.
    *
-   * @param app_id id of the application whose hmi level should be changed.
+   * @param window_id window id for HMI state
    *
    * @param state new hmi state for certain application.
    */
-  virtual void AddHMIState(HmiStatePtr state) = 0;
+  virtual void AddHMIState(const WindowID window_id, HmiStatePtr state) = 0;
 
   /**
    * @brief RemoveHMIState the function that will turn back hmi_level after end
    * of some event
    *
-   * @param app_id id of the application whose hmi level should be changed.
+   * @param window_id window id for HMI state
    *
    * @param state_id that should be removed
    */
-  virtual void RemoveHMIState(HmiState::StateID state_id) = 0;
+  virtual void RemoveHMIState(const WindowID window_id,
+                              HmiState::StateID state_id) = 0;
 
   /**
    * @brief HmiState of application within active events PhoneCall, TTS< etc ...
+   * @param window_id window id for HMI state
    * @return Active HmiState of application
    */
-  virtual const HmiStatePtr CurrentHmiState() const = 0;
+  virtual const HmiStatePtr CurrentHmiState(const WindowID window_id) const = 0;
 
   /**
    * @brief RegularHmiState of application without active events VR, TTS etc ...
+   * @param window_id window id for HMI state
    * @return HmiState of application
    */
-  virtual const HmiStatePtr RegularHmiState() const = 0;
+  virtual const HmiStatePtr RegularHmiState(const WindowID window_id) const = 0;
 
   /**
    * @brief Checks if app is allowed to change audio source
@@ -756,10 +785,11 @@ class Application : public virtual InitialApplicationData,
   /**
    * @brief PostponedHmiState returns postponed hmi state of application
    * if it's present
-   *
+   * @param window_id window id for HMI state
    * @return Postponed hmi state of application
    */
-  virtual const HmiStatePtr PostponedHmiState() const = 0;
+  virtual const HmiStatePtr PostponedHmiState(
+      const WindowID window_id) const = 0;
 
   /**
    * @brief Keeps id of softbuttons which is created in commands:
@@ -901,9 +931,11 @@ class Application : public virtual InitialApplicationData,
 
   /**
    * @brief set_system_context Set system context for application
+   * @param window_id window id for HMI state
    * @param system_context Current context
    */
   virtual void set_system_context(
+      const WindowID window_id,
       const mobile_api::SystemContext::eType& system_context) = 0;
 
   /**
@@ -915,9 +947,11 @@ class Application : public virtual InitialApplicationData,
 
   /**
    * @brief set_hmi_level Set HMI level for application
+   * @param window_id window id for HMI state
    * @param hmi_level Current HMI level
    */
-  virtual void set_hmi_level(const mobile_api::HMILevel::eType& hmi_level) = 0;
+  virtual void set_hmi_level(const WindowID window_id,
+                             const mobile_api::HMILevel::eType& hmi_level) = 0;
 
   /**
    * @brief Return pointer to extension by uid
