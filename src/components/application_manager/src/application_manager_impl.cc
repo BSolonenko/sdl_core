@@ -3365,7 +3365,7 @@ void ApplicationManagerImpl::ProcessApp(const uint32_t app_id,
 }
 
 void ApplicationManagerImpl::SendHMIStatusNotification(
-    const std::shared_ptr<Application> app) {
+    const std::shared_ptr<Application> app, const WindowID window_id) {
   LOG4CXX_AUTO_TRACE(logger_);
   DCHECK_OR_RETURN_VOID(app);
   smart_objects::SmartObjectSPtr notification =
@@ -3383,6 +3383,8 @@ void ApplicationManagerImpl::SendHMIStatusNotification(
 
   message[strings::msg_params][strings::hmi_level] =
       static_cast<int32_t>(app->hmi_level());
+
+  message[strings::msg_params][strings::window_id] = window_id;
 
   message[strings::msg_params][strings::audio_streaming_state] =
       static_cast<int32_t>(app->audio_streaming_state());

@@ -283,8 +283,8 @@ class ApplicationManager {
    * @param application_impl application with changed HMI status
    *
    **/
-  virtual void SendHMIStatusNotification(
-      const std::shared_ptr<Application> app) = 0;
+  virtual void SendHMIStatusNotification(const std::shared_ptr<Application> app,
+                                         const WindowID window_id) = 0;
 
   /**
    * @brief Checks if driver distraction state is valid, creates message

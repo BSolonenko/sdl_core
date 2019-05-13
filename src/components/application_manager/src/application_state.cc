@@ -137,6 +137,20 @@ HmiStates ApplicationState::GetStates(const HmiState::StateID state_id) const {
   return hmi_states;
 }
 
+WindowIds ApplicationState::GetWindowIds() const {
+  LOG4CXX_DEBUG(logger_, "Collecting available window ID's");
+
+  WindowIds window_ids;
+  sync_primitives::AutoLock auto_lock(hmi_states_map_lock_);
+  std::for_each(hmi_states_map_.begin(),
+                hmi_states_map_.end(),
+                [&](HmiStatesMap::value_type value) {
+                  window_ids.push_back(value.first);
+                });
+
+  return window_ids;
+}
+
 void ApplicationState::AddHMIState(const WindowID window_id,
                                    HmiStatePtr state) {
   LOG4CXX_AUTO_TRACE(logger_);

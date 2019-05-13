@@ -42,6 +42,7 @@
 
 namespace application_manager {
 
+typedef std::vector<WindowID> WindowIds;
 typedef std::vector<HmiStatePtr> HmiStates;
 typedef std::map<WindowID, HmiStates> HmiStatesMap;
 
@@ -101,6 +102,13 @@ class ApplicationState {
    * @return list of all states matches provided state id
    */
   HmiStates GetStates(const HmiState::StateID state_id) const;
+
+  /**
+   * @brief Getter for a list of available application windows including the
+   * main
+   * @return list of available window ids
+   */
+  WindowIds GetWindowIds() const;
 
  private:
   /**

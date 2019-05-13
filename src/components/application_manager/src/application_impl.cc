@@ -320,6 +320,11 @@ const HmiStatePtr ApplicationImpl::RegularHmiState(
   return state_.GetState(window_id, HmiState::STATE_ID_REGULAR);
 }
 
+WindowIds ApplicationImpl::GetWindowIds() const {
+  LOG4CXX_DEBUG(logger_, "Colleacting window ids for application " << app_id());
+  return state_.GetWindowIds();
+}
+
 bool ApplicationImpl::IsAllowedToChangeAudioSource() const {
   if (is_remote_control_supported() && is_media_application()) {
     return true;

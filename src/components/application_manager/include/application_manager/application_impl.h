@@ -357,6 +357,8 @@ class ApplicationImpl : public virtual Application,
    */
   const HmiStatePtr CurrentHmiState(const WindowID window_i) const FINAL;
 
+  WindowIds GetWindowIds() const FINAL;
+
   /**
    * @brief Checks if app is allowed to change audio source
    * @return True - if allowed, otherwise - False

@@ -208,6 +208,12 @@ class HmiState {
   }
 
   /**
+   * @brief window_type getter for a window type for this type
+   * @return current state window type
+   */
+  mobile_apis::WindowType::eType window_type() const;
+
+  /**
    * @brief set_window_type sets current state window type
    * @param window_type new window type
    */

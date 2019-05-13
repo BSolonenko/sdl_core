@@ -133,6 +133,7 @@ const char* activate_app_hmi_level = "level";
 const char* audio_streaming_state = "audioStreamingState";
 const char* video_streaming_state = "videoStreamingState";
 const char* system_context = "systemContext";
+const char* window_id = "windowID";
 const char* speech_capabilities = "speechCapabilities";
 const char* vr_capabilities = "vrCapabilities";
 const char* audio_pass_thru_capabilities = "audioPassThruCapabilities";

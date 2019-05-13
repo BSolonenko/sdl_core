@@ -770,6 +770,13 @@ class Application : public virtual InitialApplicationData,
   virtual const HmiStatePtr CurrentHmiState(const WindowID window_id) const = 0;
 
   /**
+   * @brief Getter for a list of available application windows including the
+   * main
+   * @return list of available window ids
+   */
+  virtual WindowIds GetWindowIds() const = 0;
+
+  /**
    * @brief RegularHmiState of application without active events VR, TTS etc ...
    * @param window_id window id for HMI state
    * @return HmiState of application
