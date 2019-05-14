@@ -76,8 +76,12 @@ void OnSystemContextNotification::Run() {
   }
 
   if (app && mobile_api::SystemContext::INVALID_ENUM != system_context) {
-    application_manager_.state_controller().SetRegularState(app,
-                                                            system_context);
+    application_manager_.state_controller().SetRegularState(
+        app,
+        mobile_apis::PredefinedWindows::
+            DEFAULT_WINDOW, /* TODO(AKalinich): Update this RPC to use window_id
+                               parameter */
+        system_context);
   } else {
     LOG4CXX_ERROR(logger_, "Application does not exist");
   }

@@ -292,8 +292,12 @@ bool ResumeCtrlImpl::SetAppHMIState(
     return false;
   }
   application->set_is_resuming(true);
-  application_manager_.state_controller().SetRegularState(application,
-                                                          hmi_level);
+  application_manager_.state_controller().SetRegularState(
+      application,
+      mobile_apis::PredefinedWindows::
+          DEFAULT_WINDOW, /* TODO(AKalinich): Check if we need to change HMI
+                             level for a main window only for that case */
+      hmi_level);
   LOG4CXX_INFO(logger_,
                "Application with policy id " << application->policy_app_id()
                                              << " got HMI level " << hmi_level);

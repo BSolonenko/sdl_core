@@ -121,6 +121,9 @@ void OnExitApplicationNotification::Run() {
 
   application_manager_.state_controller().SetRegularState(
       app_impl,
+      mobile_apis::PredefinedWindows::
+          DEFAULT_WINDOW, /* TODO(AKalinich): Check if we need to change HMI
+                             level for a main window only for that case */
       HMILevel::HMI_NONE,
       AudioStreamingState::NOT_AUDIBLE,
       VideoStreamingState::NOT_STREAMABLE,

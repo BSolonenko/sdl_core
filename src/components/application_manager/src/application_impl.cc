@@ -1151,7 +1151,8 @@ void ApplicationImpl::set_hmi_level(
   }
   ApplicationSharedPtr app = application_manager_.application(app_id());
   DCHECK_OR_RETURN_VOID(app)
-  application_manager_.state_controller().SetRegularState(app, new_hmi_level);
+  application_manager_.state_controller().SetRegularState(
+      app, window_id, new_hmi_level);
   LOG4CXX_INFO(logger_, "hmi_level = " << new_hmi_level);
   usage_report_.RecordHmiStateChanged(new_hmi_level);
 }

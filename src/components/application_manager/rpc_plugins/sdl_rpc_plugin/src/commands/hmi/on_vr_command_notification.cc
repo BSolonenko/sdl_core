@@ -72,7 +72,12 @@ void OnVRCommandNotification::Run() {
     ApplicationSharedPtr app = application_manager_.application(app_id);
     if (app) {
       application_manager_.state_controller().SetRegularState(
-          app, mobile_apis::HMILevel::HMI_FULL, true);
+          app,
+          mobile_apis::PredefinedWindows::
+              DEFAULT_WINDOW, /* TODO(AKalinich): Check if we need to change HMI
+                                 level for a main window only for that case */
+          mobile_apis::HMILevel::HMI_FULL,
+          true);
     } else {
       LOG4CXX_ERROR(logger_, "Unable to find appication " << app_id);
     }

@@ -739,7 +739,15 @@ bool ApplicationManagerImpl::ActivateApplication(ApplicationSharedPtr app) {
   const VideoStreamingState::eType video_state =
       app->IsVideoApplication() ? VideoStreamingState::STREAMABLE
                                 : VideoStreamingState::NOT_STREAMABLE;
-  state_ctrl_.SetRegularState(app, hmi_level, audio_state, video_state, false);
+  state_ctrl_.SetRegularState(
+      app,
+      mobile_apis::PredefinedWindows::
+          DEFAULT_WINDOW, /* TODO(AKalinich): Check if we need to change HMI
+                             level for a main window only for that case */
+      hmi_level,
+      audio_state,
+      video_state,
+      false);
   return true;
 }
 
@@ -3835,7 +3843,13 @@ void ApplicationManagerImpl::OnUpdateHMIAppType(
                    ((*it)->hmi_level() == mobile_api::HMILevel::HMI_LIMITED)) {
           MessageHelper::SendUIChangeRegistrationRequestToHMI(*it, *this);
           state_controller().SetRegularState(
-              *it, mobile_apis::HMILevel::HMI_BACKGROUND, true);
+              *it,
+              mobile_apis::PredefinedWindows::
+                  DEFAULT_WINDOW, /* TODO(AKalinich): Check if we need to change
+                                     HMI level for a main window only for that
+                                     case */
+              mobile_apis::HMILevel::HMI_BACKGROUND,
+              true);
         }
       }
     }
