@@ -38,6 +38,7 @@
 #include "interfaces/HMI_API.h"
 #include "interfaces/MOBILE_API.h"
 #include "json/json.h"
+#include "smart_objects/enum_schema_item.h"
 #include "smart_objects/smart_object.h"
 #include "utils/macro.h"
 
@@ -227,6 +228,21 @@ class HMICapabilitiesImpl : public HMICapabilities {
    * @param display_capabilities supported display capabilities
    */
   void set_display_capabilities(
+      const smart_objects::SmartObject& display_capabilities) OVERRIDE;
+
+  /*
+   * @brief Retrieves information about the display capability
+   *
+   * @return Currently supported display capability
+   */
+  const smart_objects::SmartObject* display_capability() const OVERRIDE;
+
+  /*
+   * @brief Sets supported display capability
+   *
+   * @param display_capability supported display capability
+   */
+  void set_display_capability(
       const smart_objects::SmartObject& display_capabilities) OVERRIDE;
 
   /*
@@ -559,6 +575,7 @@ class HMICapabilitiesImpl : public HMICapabilities {
   smart_objects::SmartObject* tts_supported_languages_;
   smart_objects::SmartObject* vr_supported_languages_;
   smart_objects::SmartObject* display_capabilities_;
+  smart_objects::SmartObject* display_capability_;
   smart_objects::SmartObject* hmi_zone_capabilities_;
   smart_objects::SmartObject* soft_buttons_capabilities_;
   smart_objects::SmartObject* button_capabilities_;

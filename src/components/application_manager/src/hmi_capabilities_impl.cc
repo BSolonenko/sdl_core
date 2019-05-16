@@ -34,6 +34,7 @@
 
 #include "application_manager/application_manager.h"
 #include "application_manager/hmi_capabilities_impl.h"
+#include "application_manager/hmi_capabilities_converter.h"
 #include "application_manager/message_helper.h"
 #include "application_manager/smart_object_keys.h"
 #include "config_profile/profile.h"
@@ -42,7 +43,6 @@
 #include "smart_objects/smart_object.h"
 #include "utils/file_system.h"
 #include "utils/logger.h"
-
 namespace application_manager {
 namespace formatters = ns_smart_device_link::ns_json_handler::formatters;
 
@@ -388,6 +388,7 @@ HMICapabilitiesImpl::HMICapabilitiesImpl(ApplicationManager& app_mngr)
     , tts_supported_languages_(NULL)
     , vr_supported_languages_(NULL)
     , display_capabilities_(NULL)
+    , display_capability_(NULL)
     , hmi_zone_capabilities_(NULL)
     , soft_buttons_capabilities_(NULL)
     , button_capabilities_(NULL)
@@ -566,6 +567,14 @@ void HMICapabilitiesImpl::set_display_capabilities(
     display_capabilities_ =
         new smart_objects::SmartObject(display_capabilities);
   }
+}
+
+void HMICapabilitiesImpl::set_display_capability(
+    const smart_objects::SmartObject& display_capability) {
+  if (display_capability_) {
+    delete display_capability_;
+  }
+  display_capability_ = new smart_objects::SmartObject(display_capability);
 }
 
 void HMICapabilitiesImpl::set_hmi_zone_capabilities(
@@ -756,6 +765,11 @@ const smart_objects::SmartObject* HMICapabilitiesImpl::tts_supported_languages()
 const smart_objects::SmartObject* HMICapabilitiesImpl::display_capabilities()
     const {
   return display_capabilities_;
+}
+
+const smart_objects::SmartObject* HMICapabilitiesImpl::display_capability()
+    const {
+  return display_capability_;
 }
 
 const smart_objects::SmartObject* HMICapabilitiesImpl::hmi_zone_capabilities()
@@ -1196,6 +1210,24 @@ bool HMICapabilitiesImpl::load_capabilities_from_file() {
           if (!rc_capability_so.empty()) {
             set_rc_supported(true);
           }
+        }
+        if (check_existing_json_member(system_capabilities,
+                                       strings::display_capability)) {
+          smart_objects::SmartObject display_capabilities_so;
+          formatters::CFormatterJsonBase::jsonValueToObj(
+              system_capabilities.get(strings::display_capability, ""),
+              display_capabilities_so);
+
+          if (!display_capabilities_so.asArray()) {
+            return false;
+          }
+          for (auto& display_capability : *display_capabilities_so.asArray()) {
+            if (!HMICapabilitiesConverter::ConvertDisplayCapability(
+                    display_capability)) {
+              return false;
+            }
+          }
+          set_display_capability(display_capabilities_so);
         }
       }
     }  // UI end

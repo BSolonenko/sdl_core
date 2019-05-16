@@ -230,6 +230,21 @@ class HMICapabilities {
       const smart_objects::SmartObject& display_capabilities) = 0;
 
   /*
+   * @brief Retrieves information about the display capability
+   *
+   * @return Currently supported display capability
+   */
+  virtual const smart_objects::SmartObject* display_capability() const = 0;
+
+  /*
+   * @brief Sets supported display capability
+   *
+   * @param display_capability supported display capability
+   */
+  virtual void set_display_capability(
+      const smart_objects::SmartObject& display_capabilities) = 0;
+
+  /*
    * @brief Retrieves information about the HMI zone capabilities
    *
    * @return Currently supported HMI zone capabilities

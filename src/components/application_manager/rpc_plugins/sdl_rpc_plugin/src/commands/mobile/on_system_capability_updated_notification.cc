@@ -127,6 +127,16 @@ void OnSystemCapabilityUpdatedNotification::Run() {
                 [strings::app_services_capabilities] = app_service_caps;
       break;
     }
+    case mobile_apis::SystemCapabilityType::DISPLAY: {
+      if (hmi_capabilities_.display_capability()) {
+        msg_params[strings::system_capability][strings::display_capability] =
+            *hmi_capabilities_.display_capability();
+      } else {
+        return;
+      }
+      break;
+    }
+
     default:
       return;
   }

@@ -166,6 +166,12 @@ const char* hybrid_app_preference = "hybridAppPreference";
 const char* is_cloud_application = "isCloudApplication";
 const char* cloud_connection_status = "cloudConnectionStatus";
 const char* endpoint = "endpoint";
+const char* display_capability = "displayCapabilities";
+const char* window_type_supported = "windowTypeSupported";
+const char* window_capabilities = "windowCapabilities";
+const char* text_fields = "textFields";
+const char* image_fields = "imageFields";
+const char* button_capabilities = "buttonCapabilities";
 
 // PutFile
 const char* sync_file_name = "syncFileName";

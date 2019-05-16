@@ -113,6 +113,12 @@ void UIGetCapabilitiesResponse::Run() {
           msg_params[strings::system_capabilities]
                     [strings::video_streaming_capability]);
     }
+    if (msg_params[strings::system_capabilities].keyExists(
+            strings::display_capability)) {
+      hmi_capabilities.set_video_streaming_capability(
+          msg_params[strings::system_capabilities]
+                    [strings::display_capability]);
+    }
   }
 }
 
